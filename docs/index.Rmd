@@ -1,0 +1,15 @@
+---
+title: "Government & Public Sector R Conference  - Using Mapping for Public Service"
+---
+
+### Instructor: Kaz Sakamoto
+Email: [k.sakamoto@colmubia.edu](k.sakamoto@colmubia.edu)
+
+------
+
+## [Section 1 - Intro to GIS ](Section1_GIS.html)
+## [Section 2 - Coordinate Reference Systems](Section1_CRS.html)
+## [Section 3 - Cartography](Section1_Cartography.html)
+## [Section 4 - Geoprocessing](Section1_Geoprocessing.html)
+## [Section 5 - Spatial Point Pattern Analysis](Section1_SpatialStats.html)
+## [Section 6 - Multi-criteria Decision Analysis](Section1_MCDA.html)
