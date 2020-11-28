@@ -1,0 +1,358 @@
+---
+title: "Intro to GIS"
+author: "Kaz Sakamoto"
+date: "`r Sys.Date()`"
+output: "ioslides_presentation"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      warning = FALSE, 
+                      error = FALSE, 
+                      cache = FALSE, 
+                      message = FALSE,
+                      fig.align="center")
+```
+
+# Introductions
+
+## About Me
+
+- **name** : Kaz Sakamoto
+
+- **email** : kaz@landeranalytics.com | k.sakamoto@columbia.edu  
+
+- **background** : Senior Data Scientist - Lander Analytics & Adjunct Assistant Professor Columbia University GSAPP  
+
+- **new COVID hobby** : Making Kimchi 
+
+## About You
+
+- **name** :
+
+- **background** :
+
+- **new COVID hobby** :
+
+## Agenda
+
+- 09:00-10:00 Intro to GIS
+- 10:00-11:00 Projections (CRS)
+- 11:00-12:00 Cartography
+- 12:00-13:00 Lunch
+- 13:00-14:00 Geoprocessing Tools
+- 14:00-15:30 Spatial Stats
+- 15:30-15:45 Break
+- 15:45-17:00 Spatial Autocorrelation + Regression
+
+# Brief History of Maps + GIS
+
+## First Maps
+
+Why do we need maps?
+
+```{r clayTablet, echo=FALSE, fig.cap="Imago Mundi: Babylonia 500 BCE", out.height = '100%'}
+knitr::include_graphics('https://www.geolounge.com/wp-content/uploads/2014/11/Baylonianmaps.jpg')
+```
+
+<div class="notes">
+Ancient people needed to record and share geographic information too.
+
+where resources are, natural features etc.
+</div>
+
+## Data + Maps
+
+What insights can maps show us?
+
+```{r JohnSnow1, echo=FALSE, fig.cap="Broad Street Cholrea Map - 1854", out.width= '60%' }
+knitr::include_graphics('https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Snow-cholera-map-1.jpg/1277px-Snow-cholera-map-1.jpg')
+```
+
+<div class="notes">
+Mapping went from primarily navigation/resource tools to
+data/insight tools. 
+</div>
+
+## Maps as a Service
+
+What can maps do for us?
+
+```{r googleMaps, echo=FALSE, fig.cap="Google Maps Routes", out.height = '90%'}
+knitr::include_graphics('https://nyc.streetsblog.org/wp-content/uploads/2010/03/08/Picture_2.png')
+```
+
+<div class="notes">
+Now we come to rely on mapping technologies,
+routing, check-ins, security
+</div>
+
+## Why Spatial Analysis?
+
+Important concepts 
+**Distance, Adjacency, Interaction, Neighborhood**
+
+or the 3Cs
+**Containment, Connectivity, Closeness**
+
+<div class="notes">
+Normal stats does not really think about this.
+</div>
+
+# GIS
+
+## What is GIS
+
+```{r WhatIsGIS, out.width = '100%'}
+knitr::include_graphics('http://www.edc.uri.edu/nrs/classes/nrs409509/lectures/3gisdefined/5%20Points%20of%20GIS.jpg')
+```
+
+<div class="notes">
+A geographic information system (GIS) is a conceptualized framework that provides the ability to capture and analyze spatial and geographic data
+
+GIS refers to a system where geographic information is stored in layers and integrated with geographic software programs so that spatial information can be created, stored, manipulated, analyzed, and visualized (mapped)
+</div>
+
+
+## Another Definition
+
+**A GIS is a computer-based system to aid in the collection, maintenance, storage, analysis, output, and distribution of spatial data and information.**
+
+GIS allows us to define the **where** and **what** types of questions that we have.
+
+## Outputs not always maps
+
+could be just the attribute data for a model. other visualizations. etc
+
+
+## Models of Abstraction
+
+```{r globe, echo=FALSE, fig.cap="A model of the Earth", out.width = '60%'}
+knitr::include_graphics('https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=9986512-847&recipeName=680')
+```
+
+<div class="notes">
+What are other models? 
+linear regression, architectural models, neural networks, city as a machine.
+</div>
+
+
+## Geographic Data Models
+
+The two most fundamental data models used in geographic data is the **vector** and **raster** formats.
+
+ - **Vector** data has dominated the social sciences since many features used tend to have discrete boundaries
+ - **Raster** is utilized most in environmental sciences since remote sensing data comes in as images which are more continuous in nature.
+ 
+<div class="notes">
+ If you are familiar with the Adobe Creative Suite programs, **vector** will be analogous
+to Illustrator, and **raster** to Photoshop. The vector model uses points, lines, and polygons
+to represent spatial features, while the raster model divides the surface into square cells or pixels.
+</div>
+ 
+
+## Vector vs Raster
+
+```{r vectorRaster, echo=FALSE, fig.cap=""}
+knitr::include_graphics('http://www.geography.hunter.cuny.edu/~jochen/GTECH361/lectures/lecture05/concepts/03%20-%20Geographic%20data%20models_files/image003.gif')
+```
+
+<div class="notes">
+The raster data model can be used to represent discrete features as well. A building in the raster data model, for example, would be represented as a group of connected cells with the same value, the code value for building. Representing discrete features in the raster data model requires less storage space than storing them in the vector data model, but is less accurate.
+</div>
+
+## Vectors - simple features
+
+Open Geospatial Consortium(OGC) supported formats.
+
+```{r simpleFeatures, echo=FALSE, fig.cap="simple features", out.width="50%"}
+knitr::include_graphics("https://geocompr.robinlovelace.net/figures/sf-classes.png")
+```
+
+## Vector Representation
+
+```{r representation, echo=FALSE, fig.cap="phenomena vs. Representation"}
+knitr::include_graphics("~/Documents/Spring2019/ML4Planners2018/Images/SpatialDataRepresentation.png")
+```
+
+<div class="notes">
+going back to models, these are ways of representing 3d objects.
+</div>
+
+## Topological Spatial Relations
+
+```{r toporelations, echo=FALSE}
+knitr::include_graphics("http://sar.kangwon.ac.kr/etc/rs_note/giswb/vol1/cp2/2-4.gif")
+```
+
+<div class="notes">
+this comes in handy routing, neighbors, other spatial relationship, contiguity 
+</div>
+
+## Raster
+
+```{r rasterMap, echo=FALSE, out.width="90%"}
+knitr::include_graphics("https://user-images.githubusercontent.com/1825120/88452351-e3f13800-ce55-11ea-9d6f-540e15809513.png")
+```
+
+<div class="notes">
+In spatial analysis, the other type of data model used are rasters. Rasters are
+matrices with rows and columns representing equally spaced cells often referred
+to as pixels. Each cell has a dimension whether it is 10 ft x 10 ft, 1 m x 1 m which is
+known as the cell-size resolution. There is also a header with CRS information,
+the extent, and origin (if you recall graphing in high school).
+
+Unlike vector data, cells of a raster can have only one value, and it could represent
+continuous or discrete data. 
+</div>
+
+
+## Layered Model
+
+```{r layeredModel, echo=FALSE, fig.cap="Layers of Geographic Data"}
+knitr::include_graphics('https://www.newbergoregon.gov/sites/default/files/styles/gallery500/public/imageattachments/engineering/page/3712/gislayers.jpg')
+```
+
+<div class="notes">
+The power of gis is to work with layers.
+it's like a data base of different tables that can be joined together.
+</div>
+
+## Maps - Territory
+
+**A map is not the territory it represents, but, if correct, it has a similar structure to the territory, which accounts for its usefulness.** -  *Alfred Korzybski*
+
+<div class="notes">
+philosophically speaking, remember it's still a model. 
+</div>
+
+# Geographic Data
+
+## Attribute Data
+
+```{r attributeData, echo=FALSE, fig.cap="State Population Data", out.width = '100%'}
+knitr::include_graphics('https://www.ats.amherst.edu/software/gis/constructing_sharing_maps/images/attributes.gif')
+```
+
+<div class="notes">
+we need to table that has non-spatial information
+</div>
+
+## Geometry Data
+
+```{r geometryData, echo=FALSE, fig.cap="Spatial topology: representation and storage", out.width = '100%'}
+knitr::include_graphics('https://apollomapping.com/wp-content/user_uploads/2014/05/fig2-15_vector_topo.gif')
+```
+
+<div class="notes">
+the geometry is the spatial part
+</div>
+
+## Digital GIS Formats
+
+[GDAL](https://gdal.org/) - Geospatial Data Abstraction Library
+Can read over 200 different formats of data
+
+- Esri Shapefile
+- Geographic JavaScript Object Notation (GeoJSON)
+- Google Keyhole Markup Language (KML/KMZ)
+- GPS exchange Format (GPX)
+- OpenStreetMap OSM XML
+- GeoPackage (GPKG)
+
+<div class="notes">
+lots of format that GIS files can be stored.
+</div>
+
+## sf functions
+
+all `st_` functions are similar to PostGIS functions and methods. It's a standardized
+way of dealing with spatial data. 
+
+## sf classes
+
+- sf, the table (data.frame) with feature attributes and feature geometries, which contains
+- sfc, the list-column with the geometries for each feature (record), which is composed of
+- sfg, the feature geometry of an individual simple feature.
+
+## sf object
+
+```{r sfObject, echo=FALSE, fig.cap="", out.width = '100%'}
+knitr::include_graphics('https://r-spatial.github.io/sf/articles/sf_xfig.png')
+```
+
+
+## Exercise 1.1 Explore shapefile with sf
+
+<div class="green2">
+Reading in Shape files
+</div>
+
+# The "Bad News"
+
+## Spatial Autocorrelation
+
+Data from locations that are nearer in distance are more likely to be similar than 
+those from afar. Similar with autocorrelation in date/time. We do have measures 
+to calculate spatial autocorrelation such as Moran's I, Geary's C. 
+
+## MAUP
+
+Spatial data are often made up from aggregates such as the census. Aggregation units
+such as census tracts or blocks are arbitrary with respect to the phenomena of study
+but can have a big effect in statistics. Think about gerrymandering districts to stack
+votes of one party. 
+
+## Gerrymandering
+
+```{r maup, echo=FALSE, fig.cap="", out.width = '100%'}
+knitr::include_graphics('https://www.washingtonpost.com/resizer/RqI47KhC0wwG8mNpD4I6GdjUles=/arc-anglerfish-washpost-prod-washpost/public/6PBX2HSPWQ3CFAVQTEGUSHW5AA.png')
+```
+
+## Regression Strength
+
+```{r maupRegression, echo=FALSE, fig.cap="", out.width = '50%'}
+knitr::include_graphics('https://www.researchgate.net/profile/Aura_Salmivaara/publication/273136080/figure/fig1/AS:294926530170889@1447327372320/The-basic-idea-of-the-Modifiable-Areal-Unit-Problem-MAUP-partly-based-on-52-A-and-B.png')
+```
+
+## Ecological Fallacy
+
+is a formal fallacy in the interpretation of statistical data that occurs when inferences about the nature of individuals are deduced from inferences about the group to which those individuals belong. 
+
+Seeing that high levels of crime correlating with low income counties, doesn't mean lower income individuals are more likely to commit crimes. You can see that it has commonalities with the MAUP where different levels of aggregation matters.
+
+## Scale
+
+The geographic scale at which the study is set is very crucial. 
+
+```{r scale, echo=FALSE, fig.cap="", out.width = '50%'}
+knitr::include_graphics('https://i1.wp.com/krygier.owu.edu/krygier_html/geog_222/geog_222_lo/geog_222_lo04_gr/scale.jpg')
+```
+
+## Scale Matters
+
+```{r scalePhoto, echo=FALSE, fig.cap="", out.width = '100%'}
+knitr::include_graphics('https://i.insider.com/5e2ecd1fab49fd2e307bd522?width=1100&format=jpeg&auto=webp')
+```
+
+<div class="green2">
+large scale - large amount of data small area
+small scale - small amount of data, large area
+</div>
+
+## Non-Uniformity
+
+We can expect that areas with higher populations will have higher crime rates,
+because geographic space is non-uniform, we will expect patterns that
+reflect this. We may also see more plant species depending on the soil type
+in certain regions. 
+
+## Edge Effects
+
+We also expect that areas in the city center will have observations on all sides,
+but boundaries that may have been created arbitrarily will only have neighbors
+towards the center. This is still a poorly understood area of study in GISc.
+
+```{r edgeeffect, echo=FALSE, fig.cap="", out.width = '60%'}
+knitr::include_graphics('https://images.slideplayer.com/18/6105098/slides/slide_36.jpg')
+```

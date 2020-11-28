@@ -1,0 +1,430 @@
+---
+title: "Intro to Spatial Statistics"
+author: "Kaz Sakamoto"
+date: "`r Sys.Date()`"
+output: "ioslides_presentation"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      warning = FALSE, 
+                      error = FALSE, 
+                      cache = FALSE, 
+                      message = FALSE,
+                      fig.align="center")
+```
+
+# Spatial Statistics
+
+## Intro
+
+Unlike traditional non-spatial statistical methods,
+we incorporate space (proximity, area, connectivity, 
+and/or other spatial relationships) directly into the mathematics.
+
+There are **three** main types of spatial statistics: Geostatistics, 
+Point Pattern Analysis, and Lattice Data Analysis. We'll focus on
+the first two.
+
+## sp land
+
+We were previously working with sf objects, but we must revert back to sp objects
+to utilize the functionality of these libraries.
+
+
+## Geostatistics
+
+Geostatistics are used for point observations that are continuously changing over regions. 
+
+```{r geostats, echo=FALSE, fig.cap="Semivariogram modeling winter temps", out.width = "60%"}
+knitr::include_graphics("https://desktop.arcgis.com/en/arcmap/latest/extensions/geostatistical-analyst/GUID-EC38C932-C716-4F2D-ACA4-2F7D659C9950-web.png")
+```
+<div class="notes">
+You can think of natural phenomena like temperature, precipitation, geological features.
+</div>
+
+## Point Pattern Analysis
+
+Discrete or countable observations occur across regions that can be analyzed. 
+
+```{r pointPattern, echo=FALSE, fig.cap=""}
+knitr::include_graphics("https://folk.uio.no/ohammer/past/pointpat2.jpg")
+```
+
+<div class="notes">
+You can think of locations of trees, cases of asthma, and coffee shops on a block.
+</div>
+
+## The Case for Spatial Stats
+
+Why is this field so exciting?  One factor has been a growing
+awareness that data collected in space, like data collected over time, tend to exhibit
+statistical dependence or spatial autocorrelation. 
+
+[Tobler's First Law of Geography](https://en.wikipedia.org/wiki/Tobler%27s_first_law_of_geography) states "everything is related to everything else, but near things are more related than distant things".
+
+# Point Pattern Analysis
+
+## PPA
+
+Spatial point pattern analysis uses the `spatstat` package primarily.
+
+Examples:
+
+- Locations of Street Trees
+- Density of crimes 
+- Clustering of Asthma
+- Human Settlement Patterns
+
+## PPA Terms
+
+- **Events** are points where the location of event of interest all points are known no missing values
+- **Spatial Process** how a spatial pattern might be generated
+- **Spatial Pattern** a potential realization of a stochastic process
+- **Complete Spatial Randomness** a stochastic process that can be mapped and derived or computed.  
+
+## Applying Patterns
+
+- to better understand the phenomena
+- to monitor changing conditions
+- to compare and contrast different features
+
+## PPA Assumptions 
+
+In PPA, the null hypothesis in PPA is complete spatial randomness(CSR), 
+if you reject the null hypothesis a significant pattern may be at play.
+
+```{r csr, echo=FALSE, fig.cap="", out.width = "50%"}
+library(dplyr)
+library(sp)
+knitr::include_graphics("https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Point_pattern.png/440px-Point_pattern.png")
+```
+
+<div class="notes">
+You can think of natural phenomena like temperature, precipitation, geological features.
+</div>
+
+## Seeing & Describing Patterns
+
+Visually it's quiet easy to see patterns on a map...
+
+But can we describe them quantitatively? and what are methods
+of doing so?
+
+## Centrography
+
+The simplest method is Centrography. basically summary stats for spatial features
+
+- Mean Center computed average X and Y values
+- Standard Distance the variance average distance from features to mean center
+- Standard Deviational Ellipse standard distances split into X and Y coordinates
+
+## Centrography
+
+```{r centrpgraphy, echo=FALSE, fig.cap="", out.width="100%"}
+knitr::include_graphics("https://mgimond.github.io/Spatial/img/centrography.svg")
+```
+
+## Mean Center
+
+```{r meanCenterCode, echo=TRUE, eval = FALSE}
+mc <- input %>% st_union() %>% st_centroid()
+```
+
+```{r meanCenter, echo=FALSE, fig.cap="", out.width="100%"}
+knitr::include_graphics("https://desktop.arcgis.com/en/arcmap/10.3/tools/spatial-statistics-toolbox/GUID-1F7217DA-FC4E-46A2-B91C-7AB5E53DDA9C-web.gif")
+```
+
+## Standard Distance
+
+```{r standardDistanceCode, echo=TRUE, eval = FALSE}
+sdSF <- p %>% st_coordinates() %>% 
+    as_tibble() %>% 
+    summarize(sd = sqrt(sum((X - mean(X))^2 + (Y - mean(Y))^2)/n()))
+
+stanDist <- st_buffer(mc, dist = sdSF$sd)
+```
+
+```{r standardDistance, echo=FALSE, fig.cap="", out.width="100%"}
+knitr::include_graphics("https://desktop.arcgis.com/en/arcmap/10.3/tools/spatial-statistics-toolbox/GUID-8C3A2CCE-F93F-4036-8ADA-CB2FDF9DB45C-web.gif")
+```
+
+<div class="notes">
+You can see that our standard distance is similar to one standard deviation. 68% of our data will be covered in from
+the mean center.
+
+shows compactness
+</div>
+
+# Density
+
+## Global Density
+
+if we look at the whole study area we can calculate the point density as 
+$$\frac{n}{a}$$
+where $n$ is the observed number of points and $a$ is the study region's area. For
+instance if we had 10 schools in 100 acres, our point density is $$\frac{10}{100} = 0.1$$
+so 0.1 schools per acre. 
+
+## Local Density
+
+We looked at global density, but what about point patterns that cane be measured 
+across different locations within the study region?
+
+We can then contrast if density is equally distributed across the region, 
+or if there maybe an underlying local process at play.
+
+<div class="notes">
+What is a neighborhood? distance
+</div>
+
+## Quadrat Density
+
+Quadrats or sub-divisions is a simple form of local density measurement.
+Quadrats are are often squares, but many other
+shapes such as hexagons and triangles can be implored. 
+
+- What other shapes/tiling options could there be?
+- What properties would be beneficial?
+
+## Quadrat Density
+
+We can first create a 2x2 quadrat using the `quadratcount` function which will divide
+up our schools and count up the number of schools in each square.
+
+```{r quadrat, echo=FALSE, fig.cap="", out.width="50%"}
+knitr::include_graphics("https://mgimond.github.io/Spatial/11-Point-Patterns_files/figure-html/f11-quad01-1.png")
+```
+
+## Poisson Distribution
+
+The proability distribution for a quadrat count of PPA is based off of the possion distribution. 
+
+where $k$ is the event, $\lambda$ is the average intensity of the pattern per quadrant and $e$ is the bse of the natural 
+logarithm. 
+
+$$P(k)= \frac{\lambda^k e^{-\lambda}}{k!}$$
+
+## Poisson Distribution
+
+To measure the fit of observed the distribution from a quadrat count, you can measure that the mean and variance are equal, called the *variance-mean ratio* and it should equal be 1, if the distribution is poisson. 
+
+```{r poissonDist, echo=FALSE, fig.cap="", out.width="50%"}
+knitr::include_graphics("https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Poisson_pmf.svg/650px-Poisson_pmf.svg.png")
+```
+
+## Chi-Square
+
+So for $K$ number of event in a quadrat, you can get the $O$ observed number of quadrats and the $E$ expected number from the poisson probability. 
+
+Once you have the $O$, Poisson Probability, dervied $E$, a chi square number can be created. we expect values of 1, but larger figures can point to clustering (greater observations vs expected values).
+
+$$\chi^2 = \frac{(O-E)^2}{E}$$
+
+* limitations, include small sample size with low mean intensity per quadrat. (issue with local stats)
+
+## Quadrat Density
+
+```{r quardratCode, echo=TRUE, eval = TRUE}
+library(maptools)
+points <- tibble(X = runif(100),
+                 Y = runif(100)) %>% 
+    sp::SpatialPoints() %>% 
+    as("ppp")
+
+spatstat::quadratcount(points, nx = 2, ny = 2)
+```
+
+## Quadrat Nonuniform Geography
+
+Quadrat areas don't have to be uniform like squares, they could
+be created on a covariate like elevation, temperature, land uses, etc. or by creating a [tessellated surface](http://wiki.gis.com/wiki/index.php/Tessellation).
+
+```{r quadrat2, echo=FALSE, fig.cap="", out.width="80%"}
+knitr::include_graphics("https://mgimond.github.io/Spatial/11-Point-Patterns_files/figure-html/f11-quad03-1.png")
+```
+
+<div class="notes">
+Though there is a steep increase in density at the highest elevation range, this increase is not monotonic across all ranges of increasing elevation suggesting that density may not be explained by elevation alone.
+</div>
+
+## MAUP in Quadrat Density
+
+The quadrat analysis is still susceptible to the MAUP!
+
+```{r quadrat3, echo=FALSE, fig.cap="", out.width="25%"}
+knitr::include_graphics("http://gispopsci.org/wp-content/uploads/2012/09/MAUPZone1.gif")
+```
+
+## More Definitions
+
+- First-Order effects the influence of external or environmental factors on process outcomes
+- Second-Order effects the influence of process outcomes at one location on possible process outcomes at nearby location
+
+## First-Order Effect
+
+Elevation is a common first-order effect. You can see the effect of the tree line on a mountain.
+
+```{r firstorder, echo=FALSE, fig.cap="", out.width="100%"}
+knitr::include_graphics("https://i.stack.imgur.com/ogsav.jpg")
+```
+<div class="notes">
+elevation
+</div>
+
+
+## Second-Order Effect
+
+Some trees can create a second-order effect. Allelopathy is exhibited in trees such as the walnut
+that prohibits the growth of other species through the excretion of posion from their roots. 
+
+```{r secondorder, echo=FALSE, fig.cap="", out.width="85%"}
+knitr::include_graphics("https://myeducationofagardener.files.wordpress.com/2012/02/allelopathy-manzanita.jpg")
+```
+
+## Non-Stationary
+
+When the chances of events change over space, the process is non-stationary. ie. if 
+even though we accept probabilistic placement, if things are stationary we expect the 
+intensity to stay constant and not drift. 
+
+To complicate things further, there are first-order stationarity and second-order stationarity.
+
+
+<div class="notes">
+No drift between space or interaction between events/observations. A single realization of a 
+process is not sufficient in differentiating between the two.
+</div>
+
+## Kernel Density
+
+The kernel density is a method for exploring density from sampled features. It isn't 
+too different from the quadrat method since we are still calculating a local density,
+but in the kernel method there is a moving window that defines what local means.
+
+## Kernel
+
+A circular search area is applied that determines the distance(standard distance) to 
+search for sample locations to spread values around the
+locations. Often the quartic kernel is used. 
+
+```{r kernels, echo=FALSE, fig.cap="", out.width="65%"}
+knitr::include_graphics('https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Kernels.svg/2560px-Kernels.svg.png')
+```
+
+
+## 1D Kernel Density
+
+Here is an example of a one dimensional kernel density estimation.
+
+```{r kernel1D, echo=FALSE, fig.cap="1D Kernel Density", out.width="80%"}
+knitr::include_graphics('https://upload.wikimedia.org/wikipedia/commons/4/41/Comparison_of_1D_histogram_and_KDE.png')
+```
+
+## Kernel Density
+```{r kernel, echo=FALSE, fig.cap="Kernel Density", out.width="70%"}
+knitr::include_graphics('https://mgimond.github.io/Spatial/11-Point-Patterns_files/figure-html/f11-kernel01-1.png')
+```
+
+you will see that the above plot is using a 3x3 grid as a search distance with equal weights assigned to the cells. Locations with only one observation will have a weight of $\frac{1}{9} = 0.11$ Each cell will have this number computed across the grid.
+
+## Default Kernels
+
+The default kernel can be the "Gaussian smoothing kernel"
+
+$$(u) = \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}u^2}$$
+or "Quartic (biweight)"
+
+$$(u) = \frac{15}{16}(1-u^2)^2\ 1_{(|u|\leq1)}$$
+
+# Distance
+
+## Distance-Based Measures
+
+So far we have seen density-based methods. but we can also look at proximity/distance
+to calculate spatial statistics.
+
+## What is a Distance?
+
+- Euclidean Distance with Pythagors' theorem
+- Manhattan Distance
+- Traveled Distance
+- Others???
+
+## Average Nearest Neighbors
+
+An average nearest neighbor (ANN) analysis measures the average distance from each point in the study area to its nearest point. 
+
+The parameter k can take on any order neighbor (up to n-1 where n is the total number of points).
+
+## Calculation
+
+Average Nearest Neighbors Ratio:
+
+$$ANN_{ratio}=\dfrac{ANN}{ANN_{expected}}$$
+Average Nearest Neighbor Expected:
+
+$$ANN_{Expected}=\dfrac{0.5}{\sqrt{n/A}} $$
+<div class="notes">
+our ratio is 0.5 which means that our locations are randomly distributed. 
+
+If the index (average nearest neighbor ratio) is less than 1, the pattern exhibits clustering. If the index is greater than 1, the trend is toward dispersion.
+</div>
+
+
+## ANN
+```{r ANNcluster, echo=FALSE, fig.cap="Three different point patterns: a single cluster, a dual cluster and a randomly scattered pattern.", out.width="70%"}
+knitr::include_graphics('https://mgimond.github.io/Spatial/11-Point-Patterns_files/figure-html/f11-diff-patterns-1.png')
+```
+
+## ANN
+```{r ANNcluster2, echo=FALSE, fig.cap="Three different ANN vs. neighbor order plots. The black ANN line is for the first point pattern (single cluster); the blue line is for the second point pattern (double cluster) and the red line is for the third point pattern.", out.width="70%"}
+knitr::include_graphics('https://mgimond.github.io/Spatial/11-Point-Patterns_files/figure-html/f11-diff-ANN-plots-1.png')
+```
+
+## Issues with Bounding Geometries
+
+Do you see a problem here? Could different shapes encompassing the same point pattern have the same surface area? 
+If so, shouldn't’t the shape of our study area be a parameter in our ANN analysis? 
+
+```{r minBoundingGeo, echo=FALSE, fig.cap="Different conceptualizations of the minimmum bouding geometry", out.width="70%"}
+knitr::include_graphics('https://pro.arcgis.com/en/pro-app/tool-reference/data-management/GUID-EFBA5DB8-A161-4FE1-B2CB-792B65DC1469-web.png')
+```
+
+## Monte Carlo Simulation
+
+We can use the probability of random chance of events happening in our study space to
+simulate over many iterations. Can experimentally derive statistical significance/empirical P value. 
+
+```{r marbles, echo=FALSE, fig.cap="", out.width="70%"}
+knitr::include_graphics('https://previews.123rf.com/images/kozzi/kozzi1301/kozzi130103327/17169982-close-up-image-of-throwing-assorted-marbles.jpg')
+```
+
+## PPA Critiques
+
+- Geographic data sets are not samples
+- geographic data are almost never random
+- geographic data are not independent random (autocorrelation)
+- $n$ is always large and results will be statistically significant
+- Scientific significance matters more than statistical significance
+
+<div class="notes">
+-process-realization approach enables us to view geographic data as sample in a way
+- geographic data are not random, but is it scientifically useful to analyze through a stochastic process
+- we can develop better models than CSR
+- n is often large not always
+- scientific significance is important. that's why we need better theories. not just stats.
+
+just testing CSR is boring. we'd like to test other null hypotheses
+</div>
+
+## Inhomogenous Poisson Process
+
+```{r IPP, echo=FALSE, fig.cap="", out.width="100%"}
+knitr::include_graphics("https://image.slidesharecdn.com/9077f8b1-72fb-41dd-bd8e-edacf933ceca-170126034608/95/spatial-point-processes-and-their-applications-in-epidemiology-13-638.jpg?cb=1485402432")
+```
+
+<div class="notes">
+The inhomogeneous or nonhomogeneous Poisson point process (see Terminology) is a Poisson point process with a Poisson parameter set as some location-dependent function in the underlying space on which the Poisson process is defined. For Euclidean space 
+</div>
+

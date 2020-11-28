@@ -1,0 +1,328 @@
+---
+title: "Intro  to CRS"
+author: "Kaz Sakamoto"
+date: "`r Sys.Date()`"
+output: "ioslides_presentation"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      warning = FALSE, 
+                      error = FALSE, 
+                      cache = FALSE, 
+                      message = FALSE,
+                      fig.align="center")
+```
+
+# Coordinate Reference Systems
+
+## What is CRS?
+
+The coordinate reference system is crucial since it ties the vector and raster data types to a location on the earth (or other bodies).
+
+```{r CRS, echo=FALSE, fig.cap="USA with varying CRSs", out.width= '80%' }
+knitr::include_graphics('https://media.opennews.org/cache/06/37/0637aa2541b31f526ad44f7cb2db7b6c.jpg')
+```
+
+<div class="notes">
+we'll get more into this. but you may have wondered why the top of the us sometimes flat
+and some times curved. which is correct?
+</div>
+
+## Parts of a CRS
+
+- **Datum** : a set of parameters that define the position of the origin, the scale, and the orientation of a coordinate system.
+- **Coordinate System** :  a set of mathematical rules for specifying how coordinates are to be assigned to points, such as: affine, cylindrical, Cartesian, ellipsoidal, linear, polar, spherical, vertical, etc.
+
+## Datum
+
+A reference system or an approximation of the Earth's surface against which positional measurements are made for computing locations.
+
+The most common datums used are NAD83 and WGS84(basis of all GPS measurements)
+
+```{r surveyMarker, echo=FALSE, fig.cap="US Geodetic Survey Marker", out.width= '40%' }
+knitr::include_graphics('https://upload.wikimedia.org/wikipedia/commons/5/50/DarienCTUSCoastAndGeodeticSurvey1965Marker11042007.jpg')
+```
+
+## Topographical Earth
+
+```{r topgraphicEarth, echo=FALSE, fig.cap="Topography of the Earth", out.width= '100%' }
+knitr::include_graphics('http://solarviews.com/raw/earth/earthcyl1.jpg')
+```
+
+<div class="notes">
+but we have topography on earth, what about mountains and trenches?
+</div>
+
+## Reference Ellipsoid
+```{r ellipsoid, echo=FALSE, fig.cap="", out.width= '70%' }
+knitr::include_graphics('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/WGS84_mean_Earth_radius.svg/440px-WGS84_mean_Earth_radius.svg.png')
+```
+
+<div class="notes">
+a simple model is the globe or sphere, or we can use a slightly more
+complicated shape like the ellipsoid
+</div>
+
+## Geoid
+
+```{r geoidUndulation, echo=FALSE, fig.cap="", out.width= '70%' }
+knitr::include_graphics('https://upload.wikimedia.org/wikipedia/commons/4/4a/Geoid_undulation_10k_scale.jpg')
+```
+
+<div class="notes">
+
+here is the geoid 
+
+is the shape that the ocean surface would take under the influence of the gravity and rotation of Earth alone, if other influences such as winds and tides were absent.
+</div>
+
+
+## Comparisons
+1: Ocean 2: Reference Ellipsoid 3: Local Plumb Line 4: Continent 5: Geoid
+
+```{r geoid, echo=FALSE, fig.cap="", out.width= '100%' }
+knitr::include_graphics('https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Geoida.svg/2880px-Geoida.svg.png')
+```
+
+<div class="notes">
+more complicated shapes could include the geoid 
+maybe for more physical modelling of the earth
+</div>
+
+
+# Coordinate Systems Types
+
+## Geographic Coordinate Systems
+
+A geographic coordinate system is a method for describing the position of a geographic location on the earth's surface using spherical measures of latitude and longitude. These are measures of the angles (in degrees) from the center of the earth to a point on the earth's surface when the earth is modeled as a sphere.
+
+```{r geographicCoordinateSystem, echo=FALSE, fig.cap="", out.width= '40%' }
+knitr::include_graphics('https://desktop.arcgis.com/en/arcmap/10.3/guide-books/map-projections/GUID-1F041965-BBA5-4E59-9005-36ABD3908252-web.gif')
+```
+
+## Projected Coordinate Systems
+
+A projected coordinate system is defined on a flat, two-dimensional surface and locations are identified by x,y coordinates on a grid, with the origin at the center of the grid. 
+
+```{r projectedCoordinateSystem, echo=FALSE, fig.cap="", out.width= '30%' }
+knitr::include_graphics('https://desktop.arcgis.com/en/arcmap/10.3/guide-books/map-projections/GUID-6C4EA60E-23C4-4DC2-8D66-1C314BE2EE5E-web.gif')
+```
+
+## Citrus Analogy
+
+Datum - Which citrus shape to use?
+
+```{r citrusShapes, echo=FALSE, fig.cap="", out.width= '80%' }
+knitr::include_graphics('https://cdn.mos.cms.futurecdn.net/FNtDgrN4KhwPNSNeH25Y7X-1024-80.jpg')
+```
+
+## Citrus Analogy Cont
+
+Projection - How to peel and flatten it
+
+```{r citrusPee1, echo=FALSE,  fig.show = "hold", out.width = "50%", fig.align = "default"}
+knitr::include_graphics('https://img.oola.com/quill/a/c/9/2/6/b/ac926bf87c3293d94d1408cbcf22ecdb6e5191de.jpg')
+knitr::include_graphics('https://www.spiceography.com/wp-content/uploads/2017/11/orange-peel.jpg')
+```
+
+<div class="notes">
+This projection will always cause some sort of distortion when you go from a 3D object to a 2D. The classic example is trying to flatten a orange peel, you can't do that with out tearing the skin, flattening and stretching it out. A developable surface is a surface can 
+be flattened onto a plane without distortion (i.e. "stretching" or "compressing").
+
+While we many cartographic projections involve projecting the Earth to a developable surface and then "unrolling" the surface into a region on the plane. Since they may be constructed by bending a flat sheet, they are also important in manufacturing objects from sheet metal, cardboard, and plywood. An industry which uses developed surfaces extensively is shipbuilding.^[[Developable Surface](https://en.wikipedia.org/wiki/Developable_surface)]
+
+</div>
+
+## Projection Lamp Shade Analogy
+
+```{r lightsource, echo=FALSE, fig.cap="", out.width= '70%' }
+knitr::include_graphics('https://desktop.arcgis.com/en/arcmap/10.3/guide-books/map-projections/GUID-C7DB60DD-58FF-4D48-8FBE-85224C8FABD1-web.gif')
+```
+
+<div class="notes">
+more complicated shapes could include the geoid 
+maybe for more physical modelling of the earth
+</div>
+
+## Projection Types
+
+A few geometric shapes are implored to capture the 3D surface of the earth on to a developable surface. 
+
+- Cones
+- Cylinders
+- Planes
+
+## Tangent Conic Projection
+
+```{r tangentConic, echo=FALSE, out.width = "100%"}
+knitr::include_graphics('https://desktop.arcgis.com/en/arcmap/10.3/guide-books/map-projections/GUID-44C33C80-B331-4E62-8A90-E68E49F46954-web.gif')
+```
+
+<div class="notes">
+A cone is placed over a globe. The cone and globe meet along a latitude line. This is the standard parallel. The cone is cut along the line of longitude that is opposite the central meridian and flattened into a plane.
+</div>
+
+## Secant Conic Projection
+
+```{r secantConic, echo=FALSE, out.width = "100%"}
+knitr::include_graphics('https://desktop.arcgis.com/en/arcmap/10.3/guide-books/map-projections/GUID-D2B234B0-AAE9-47D2-BFE5-380955DE3AE0-web.gif')
+```
+
+<div class="notes">
+A cone is placed over a globe but cuts through the surface. The cone and globe meet along two latitude lines. These are the standard parallels. The cone is cut along the line of longitude that is opposite the central meridian and flattened into a plane
+</div>
+
+## Secant 
+
+```{r secant, echo=FALSE, out.width = "80%"}
+knitr::include_graphics('https://gis.depaul.edu/shwang/teaching/arcview/module6.files/image004.jpg')
+```
+
+<div class="notes">
+The following diagram shows how three-dimensional features are compressed to fit onto a flat surface.
+</div>
+
+## Cylindrical Projection
+
+```{r cylinder, echo=FALSE, out.width = "100%"}
+knitr::include_graphics('https://desktop.arcgis.com/en/arcmap/10.3/guide-books/map-projections/GUID-622E6B6D-DAB6-4931-AA34-E8A48457B426-web.gif')
+```
+
+<div class="notes">
+A cylinder is placed over a globe. The cylinder can touch the globe along a line of latitude (normal case), a line of longitude (transverse case), or another line (oblique case).
+</div>
+
+## Planar Projection
+
+```{r planar, echo=FALSE, out.width = "100%"}
+knitr::include_graphics('https://desktop.arcgis.com/en/arcmap/10.3/guide-books/map-projections/GUID-C965A168-9923-42C0-88F1-0D3893EB9196-web.gif')
+```
+
+<div class="notes">
+A plane is placed over a globe. The plane can touch the globe at the pole (polar case), the equator (equatorial case), or another line (oblique case).
+</div>
+
+
+## Polar Aspect
+
+```{r Polar, echo=FALSE, out.width = "100%"}
+knitr::include_graphics('https://desktop.arcgis.com/en/arcmap/10.3/guide-books/map-projections/GUID-1CBDB335-A843-43AC-A6C9-01700975FA87-web.gif')
+```
+
+<div class="notes">
+Azimuthal, or planar projections can have different perspective points. The gnomonic projection's point is at the center of the globe. The opposite side of the globe from the point of contact is used for a stereographic projection. The perspective point for an orthographic projection is at infinity.
+</div>
+
+
+## Preservation of Attributes
+
+- Conformal Projections : Preserves Shapes
+- Equal Area Projections : Preserves Areas
+- Equidistant Projections : Preserves Distances
+- Azimuthal Projections : Preserves Directions
+
+## Tissot's Indicatrix
+
+```{r tissotGlobe, echo=FALSE, out.width = "70%"}
+knitr::include_graphics('http://wiki.gis.com/wiki/images/0/0e/Tissot_world_from_space.png')
+```
+
+<div class="notes">
+Tissot’s indicatrix, or ellipse of distortion, is a circle or ellipse that measures and illustrates distortion caused by map projection. It is a concept developed by French mathematician Nicolas Auguste Tissot. In papers published in both 1859 and 1871, Tissot illustrated that distortions occur when a true spherical model of the earth is converted to a flattened map projection.
+</div>
+
+## Mercator Projection
+
+```{r mercator, echo=FALSE, out.width = "70%"}
+knitr::include_graphics('https://upload.wikimedia.org/wikipedia/commons/8/87/Tissot_mercator.png')
+```
+
+<div class="notes">
+Linear scale is constant on the Mercator in every direction around any point, thus preserving the angles and the shapes of small objects and fulfilling the conditions of a conformal map projection.
+
+Because of the preserved 90° angles and straight lines of latitude and longitude, rhumb lines are also straight on the Mercator projection.
+</div>
+
+## Azimuthal Equidistant Projection
+
+```{r equidistant, echo=FALSE, out.width = "70%"}
+knitr::include_graphics('https://upload.wikimedia.org/wikipedia/commons/8/87/Azimuthal_equidistant_projection_with_Tissot%27s_indicatrix.png')
+```
+
+<div class="notes">
+It has the useful properties that all points on the map are at proportionally correct distances from the center point, and that all points on the map are at the correct azimuth (direction) from the center point. A useful application for this type of projection is a polar projection which shows all meridians (lines of longitude) as straight, with distances from the pole represented correctly. The flag of the United Nations contains an example of a polar azimuthal equidistant projection
+</div>
+
+## Transverse Mercator Projection
+
+```{r transverseMercator, echo=FALSE, out.width = "70%"}
+knitr::include_graphics('https://upload.wikimedia.org/wikipedia/commons/3/36/Transverse_Mercator_projection_of_Standard_meridian_135E-45W_withTissot%27s_indicatrix.png')
+```
+
+<div class="notes">
+The transverse Mercator map projection is an adaptation of the standard Mercator projection. The transverse version is widely used in national and international mapping systems around the world, including the UTM. When paired with a suitable geodetic datum, the transverse Mercator delivers high accuracy in zones less than a few degrees in east-west extent.
+https://gisgeography.com/utm-universal-transverse-mercator-projection/
+</div>
+
+## UTM Projection
+
+```{r UTM, echo=FALSE, out.width = "70%"}
+knitr::include_graphics('https://upload.wikimedia.org/wikipedia/commons/8/8d/Utm-zones-USA.svg')
+```
+
+<div class="notes">
+A UTM zone is a 6° segment of the Earth. Because a circle has 360°, this means that there are 60 UTM zones on Earth. (360 ÷ 6 = 60), right?
+https://gisgeography.com/utm-universal-transverse-mercator-projection/
+</div>
+
+
+## PROJ4 String
+
+- proj=: the projection of the data
+- zone=: the zone of the data (this is specific to the UTM projection)
+- datum=: the datum use
+- units=: the units for the coordinates of the data
+- ellps=: the ellipsoid (how the earth’s roundness is calculated) for the data
+
+## checking CRS
+
+to check the CRS of an sf object
+
+```{r crsSF, echo=TRUE, eval = FALSE}
+st_crs(input)
+```
+
+## setting CRS
+
+if there is no CRS you can set it
+
+```{r st_set_crs, echo=TRUE, eval = FALSE}
+st_set_crs(input, value = "epsg")
+```
+
+## reprojection CRS
+
+If you would like to reproject your sf object, use `st_transform`
+
+```{r st_transform, echo=TRUE, eval = FALSE}
+st_transform(input, value = "epsg")
+```
+
+## Exercise 2.1 Areal Mapping
+
+Now we will see what the consequences are of using different projections when we
+are calculating area. We will use the Equal Area projection as our standard since
+we know that we are preserving area with this type of projection. We will compare this
+against the Equal Distance, Conformal, and State Plane projections for US Counties. 
+
+Read in the us_county shapefile, calculate areas with `st_area`, reproject data and find the percent differences. 
+
+$$\text{Percent Difference} = \frac{\text{(comparison Value - Baseline Value)}}{\text{(BaselineValue)}}$$
+
+```{r, eval=FALSE, echo=TRUE}
+Area_Albers <- "find PROJ.4"
+Area_Equidistant <- "find PROJ.4"
+Area_Lambert <- "find PROJ.4"
+Area_NYStatePlane <- "find PROJ.4"
+```

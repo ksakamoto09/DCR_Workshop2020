@@ -1,0 +1,277 @@
+---
+title: "Intro to Modeling Spatial Data"
+author: "Kaz Sakamoto"
+date: "`r Sys.Date()`"
+output: "ioslides_presentation"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      warning = FALSE, 
+                      error = FALSE, 
+                      cache = FALSE, 
+                      message = FALSE,
+                      fig.align="center")
+```
+
+
+# Spatial Autocorrelation
+
+## Spatial Autocorrelation
+
+Tobler's first law of geography."everything is related to everything else, but near things are more related than distant things."    
+
+To model spatial data, similar to time lags, spatial lags can be created. 
+
+- spatial lags:  is a variable that averages the neighboring values of a location.
+
+## Goals of Autocorrelation
+
+To measure and give a more objective measure of autocorrelation.
+
+We can visually see when things are clustered, but to what degree? Can
+we reject the null hypothesis(CSR)?
+
+## Spatial Weights Matrix
+
+we need to first capture the spatial relationship between all pairs of locations. The spatial
+weights matrix allows us to do this. 
+```{r spww, echo=FALSE, fig.cap="", out.width="100%"}
+knitr::include_graphics("https://www.researchgate.net/profile/Youyi_Bi/publication/327776659/figure/fig1/AS:672948855791617@1537454918147/A-typical-spatial-weights-matrix-Note-that-A-and-E-do-not-share-a-side-thus-their.png")
+```
+
+<div class="notes">
+the first row is the first feature with it's relationship against every other feature.
+
+here we are using adjacency.
+</div>
+
+## Contiguity Relationships
+
+We can model neighbors through contiguity.
+
+```{r neighbors, echo=FALSE, fig.cap="", out.width="100%"}
+knitr::include_graphics("https://d3i71xaburhd42.cloudfront.net/edc8bde1bba660f775d8a7d50b91fe24ed1a96c9/5-Figure3-1.png")
+```
+
+## Distance Relationships
+
+We can also model neighbors through distances.
+
+Inverse Distance, Distance Band, Zone of Indifference, K-nearest Neighbor, etc...
+
+```{r distances, echo=FALSE,  fig.show = "hold", out.width = "25%", fig.align = "default"}
+knitr::include_graphics("https://pro.arcgis.com/en/pro-app/tool-reference/spatial-statistics/GUID-EA90AD1C-E27D-489A-9803-2D684A0CF93E-web.gif")
+knitr::include_graphics("https://pro.arcgis.com/en/pro-app/tool-reference/spatial-statistics/GUID-7FC7C4D7-B1D5-4739-A7AC-7DC5E39D0F8A-web.gif")
+knitr::include_graphics("https://pro.arcgis.com/en/pro-app/tool-reference/spatial-statistics/GUID-EC3950E7-1898-4B58-B47D-43387994849E-web.gif")
+knitr::include_graphics("https://ml8ygptwlcsq.i.optimole.com/fMKjlhs.f8AX~1c8f3/w:1036/h:701/q:auto/https://www.unite.ai/wp-content/uploads/2020/02/Data3classes_2.png")
+
+```
+
+## spdep
+
+in R the `spdep` pacakge is used to create spatial weights matrix objects from
+polygon contiguities. A collection of functions to measure spatial autocorrelation
+is also included. For example, Moran's I, Geary's C, Getis/Ord G.
+
+## Spatial Weights Matrix
+
+The spatial weights themselves won't be insightful!
+
+they are just conceptualizations of the spatial relationships you choose, which
+can be used as a hypothesis of the underlying relationship materialized as a matrix.
+
+If the process is not well understood, creating a useful spatial weights matrix
+will be difficult. Starting with a simple adjacency matrix is a good idea if so.
+
+## Moran's I
+
+Moran's I is by far the most utilized autocorrelation measure. 
+
+Here is the equation for Moran's I:
+
+$$I = \frac N W  \frac {\sum_i \sum_j w_{ij}(x_i-\bar x) (x_j-\bar x)} {\sum_i (x_i-\bar x)^2} $$
+where $N$ is the number of spatial units indexed by $i$ and $j$; $x$ is the variable of interest; $\bar{x}$ is the mean of $x$;$w_{ij}$ is a matrix of spatial weights with zeroes on the diagonal (i.e., $w_{ii}=0$); and $W$ is the sum of all $w_{ij}$.^[[Moran's I](https://en.wikipedia.org/wiki/Moran%27s_I)]
+
+<div class="notes">
+basically covariance / total variance. 
+
+values will be -1 to 1
+</div>
+
+
+## Moran's I Diagnostics
+
+Moran's I is effectively the correlation coefficient for the relationship 
+between the attribute values and the local mean attribute.
+
+```{r MoransIDiagnostics, echo=FALSE, fig.cap="", out.width="70%"}
+knitr::include_graphics("https://mgimond.github.io/Spatial/img/MoranI_scatter_plot.png")
+```
+
+## Monte Carlo Simulation
+
+By scrambling the attribute values on the map,
+we can calculate an expected p value. 
+
+This is a method of empirical deriving a sampling distribution. 
+
+```{r montecarloMorans, echo=FALSE, fig.cap="not exactly like this...", out.width="70%"}
+knitr::include_graphics("https://www.explainxkcd.com/wiki/images/b/b5/united_states_map.png")
+```
+
+## Moran's I Spatial lag
+
+plotting Moran's I against number of lags can show the degree of autocorrelation across space.
+In this example, you can see the degree of autocorrelation is decreasing with distance.
+At some point, there's even no correlation. 
+
+```{r spatialLags, echo=FALSE, fig.cap="", out.width="70%"}
+knitr::include_graphics("https://mgimond.github.io/Spatial/img/MoranI_distance_band.png")
+```
+
+# Local Statistics
+
+## Local Statistics
+
+Local Statistics is a fairly recent innovation in spatial analysis. Many previous techniques(global statistics) can be 
+utilized on a subset of the study area. A localized mean is the key to many of 
+these methods. 
+
+The computational power needed to calculate Monte Carlo simulations for localized patterns
+has only recently made this area practical.   
+
+<div class="notes">
+Global didn't say where things were happening
+local can
+</div>
+
+## What is Local?
+
+A row from the spatial weight matrix could be defined as a neighborhood. 
+
+But local cab be defined with adjacency, distance, or other rule based neighborhoods.
+
+Different conceptual models will deliver different results! 
+
+<div class="notes">
+If it's transportation related, maybe connect train lines?
+</div>
+
+## Getis-Ord Methods
+
+The Getis-Ord methods of local statistics which include the Gi* and Gi
+are able to detect high or low value concentrations.
+
+## Getis-Ord Methods cont.
+
+$$G_i = \frac{\sum_{j \neq i} w_{ij} x_j}{\sum_{j \neq i} x_j}$$
+
+$$G_i^* = \frac{\sum_j w_{ij} x_j}{\sum_j x_j}$$
+
+The $G_i$ stat is simply the proportion of the sum of all $x$ values in the study 
+area accounted for by just the neighbors of $i$. 
+If neighbors are high valued, the $G_i$ will be relatively high, and conversely for low values. 
+The $G_i^*$ stat includes the $x_i$ feature too.
+
+<div class="notes">
+the main difference is that the gi doesn't have the x_i or the feature
+in it's calculation compared to the gi*.
+
+the values of Gi are dependent on the ration of two sums of x values so adding a constant to every value or taking the log
+will change the results.
+</div>
+
+## Other Points
+
+The Getis Ord methods only work with positive values. 
+
+Say you are working with binary outcomes, or positive values less than 1, then the 
+resulting General G will also be between 0 and 1.
+
+## Findings
+
+You'll see that the area with the highest neighbors now will have a higher values. 
+
+You'll also have to be careful looking at z-score values since local statistics are calculated
+with few data points. we can increase the number, but then they won't be as "local"!
+
+```{r getisordgi, echo=FALSE, fig.cap="", out.width="90%"}
+knitr::include_graphics("https://desktop.arcgis.com/en/arcmap/10.3/tools/spatial-statistics-toolbox/GUID-CD4A0DC7-205E-46CC-8C3D-558A1D48940C-web.png")
+```
+
+<div class="notes">
+again higher z-scores mean that the area has a higher average than the mean
+
+often gi* and gi give the same results.
+</div>
+
+## Local Moran's I
+
+Similar to GLobal Moran's I, instead of summarizing over the whole data set, we can summarize over the locality of each data point. 
+
+```{r localMoran, echo=FALSE, fig.cap="", out.width="90%"}
+knitr::include_graphics("https://desktop.arcgis.com/en/arcmap/10.3/tools/spatial-statistics-toolbox/GUID-203ADC3E-C9BC-4FF3-890F-B11B05F1FC41-web.png")
+```
+
+
+## Local Moran's Scatterplot
+
+A scatter plot will show the high-high and low-low clusters, as well as outliers.
+
+```{r localMoranScatter, echo=FALSE, fig.cap="", out.width="60%"}
+knitr::include_graphics("https://www.researchgate.net/profile/Cristina_Gomez/publication/229346700/figure/fig4/AS:300773247340565@1448721338553/Morans-I-scatterplot-The-slope-of-the-regression-line-is-an-estimation-of-the-global.png")
+```
+
+## Inference of Local Stats
+
+Since p values are very low in spatial statistics,
+We could change the criteria for significance.
+
+$$ a^` = 1 - (1 - a)^{1/n}$$
+
+ with the Bonferroni correction
+
+$$a^` = a/n$$ 
+
+or use Monte Carlo simulation, where the value at the location of interest is held stable.(conditional permutation)
+
+
+## Normal Regression
+
+Coefficients are set for all locations. (variables are independent)
+Predictors shouldn't be highly correlated (multicollineraity)
+dependent variables should be normally distributed. 
+
+You can always check residuals by mapping them. 
+
+If any trend is detected it's *misspecified*.
+
+<div class="notes">
+In spatial world, this implies that spatial dependence of the variables should be
+included in the model. or
+it may be reasonable to allow the model to vary spatially.
+</div>
+
+## Spatial Lag Model
+
+If there seems to be autocorrelation in your normal OLS model, you might want to include
+spatially lagged variables. you can do that with the `lagsarlm` function.
+
+You can use the spatial weights matrix from before to include the spatial lags in your regression.
+
+<div class="notes">
+https://rspatial.org/raster/analysis/7-spregression.html
+</div>
+
+## Geographically Weighted Regressions
+
+Allows regression coefficients in model to vary from area to area. As variables change from places, so can their relationships. 
+
+Instead of creating one large model, creating regional models might perform better. It is related to multi-level modeling. 
+
+## Criticism
+
+similar to other local statistics, inferences are made from regression coefficients that may not be statistically significant. Also the number of observations to be included may be small.
+
+This is why inference might be dubious, but as a exploratory tool is useful. 

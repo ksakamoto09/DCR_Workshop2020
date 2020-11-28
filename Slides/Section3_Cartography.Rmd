@@ -1,0 +1,350 @@
+---
+title: "Intro to Cartography"
+author: "Kaz Sakamoto"
+date: "`r Sys.Date()`"
+output: "ioslides_presentation"
+---
+
+```{r setup, include=FALSE}
+library(sf)
+library(tmap)
+library(dplyr)
+
+nycbb <- st_read("../Shapes/nybb")
+
+knitr::opts_chunk$set(echo = FALSE, 
+                      warning = FALSE, 
+                      error = FALSE, 
+                      cache = FALSE, 
+                      message = FALSE,
+                      fig.align="center")
+```
+
+# Map Basics
+
+## Cartography
+
+...the study and practice of making maps. Combining science, aesthetics, and technique, cartography builds on the premise that reality can be modeled in ways that communicate spatial information effectively
+
+## Types of Maps
+
+Here are a sample:
+
+- Physical maps show landscape features like rivers and land masses
+- Topographic maps show the contours of elevation lines
+- Climate maps can show atmospheric conditions
+- Thematic maps show special topics like election results or even energy usage in areas.
+
+## Reference Maps
+
+```{r reference, echo=FALSE, fig.cap="Hawaii Kai Shopping Center Map", out.width= '80%' }
+knitr::include_graphics('https://hawaiikaishoppingcenter.com/wp-content/uploads/2012/09/map.png')
+```
+
+## Choropleth Maps
+
+```{r choropleth, echo=FALSE, fig.cap="New York Times Election Map", out.width= '45%' }
+knitr::include_graphics('https://mk0brilliantmaptxoqs.kinstacdn.com/wp-content/uploads/view-from-9th-ave.jpg')
+```
+
+## 3D Maps
+```{r 3D, echo=FALSE, fig.cap="3D Terrain Map", out.width= '100%' }
+knitr::include_graphics('https://miro.medium.com/max/1024/0*2RkWRTARgD1DYscR.jpg')
+```
+
+
+## Mental Maps
+
+```{r mental, echo=FALSE, fig.cap="How New Yorkers See The World", out.width= '100%' }
+knitr::include_graphics('https://mk0brilliantmaptxoqs.kinstacdn.com/wp-content/uploads/view-from-9th-ave-600x315-cropped.jpg')
+```
+
+## Interactive Maps 
+
+```{r interactive, echo=FALSE, fig.cap="Animal Migration with Climate Change", out.width= '100%' }
+knitr::include_graphics('https://s3-us-west-2.amazonaws.com/uw-s3-cdn/wp-content/uploads/sites/6/2016/08/04151026/igrations-in-Motion-The-Nature-Conservancy20160826122035.gif')
+```
+
+## Map Elements
+
+- Title : Should clearly introduce the topic of the map
+- Legend : Gives an understanding of the range, and variation in data (make the units easy to read)
+- North Arrow : Offers orientation for cardinal directions
+- Scale Bar : Shows the scale whether it is large or small scale map and amount of detail to be excepted.^[[Scale](https://en.wikipedia.org/wiki/Scale_(map))]
+- Sources : Give credit where credit is deserved
+- Date : It's a good practice to date your maps so you remember when it was made
+- Name : Also don't forget to take credit for your work
+
+## Map Elements
+
+```{r MapElements, echo=FALSE, fig.cap="Elements of a basic map",  out.width= '80%'}
+knitr::include_graphics("https://saylordotorg.github.io/text_essentials-of-geographic-information-systems/section_13/0c71cd48743695df3cb5ca49fd858393.jpg")
+```
+
+
+## tmap Aesthetics Base Layers
+
+- `tm_polygons` Create a polygon layer (with borders)
+- `tm_symbols` Create a layer of symbols
+- `tm_lines` Create a layer of lines
+- `tm_raster` Create a raster layer
+- `tm_text` Create a layer of text labels
+- `tm_basemap` Create a layer of basemap tiles
+- `tm_tiles` Create a layer of overlay tiles
+
+## tmap Aesthetics Derived Layers
+
+- `tm_fill` Create a polygon layer (without borders)
+- `tm_borders` Create polygon borders
+- `tm_bubbles` Create a layer of bubbles
+- `tm_squares` Create a layer of squares
+- `tm_dots` Create a layer of dots
+- `tm_markers` Create a layer of markers
+- `tm_iso` Create a layer of iso/contour lines
+- `tm_rgb` Create a raster layer of an image
+
+## tmap example
+
+```{r, echo = TRUE, eval = TRUE}
+# create borders
+tm_shape(nycbb) +
+  tm_borders() 
+```
+
+## tmap example
+
+```{r, echo = TRUE,eval = TRUE}
+# create the fill
+tm_shape(nycbb) +
+  tm_fill() 
+```
+
+## tmap example
+
+```{r, echo = TRUE,eval = TRUE}
+# combine them
+tm_shape(nycbb) +
+  tm_fill() +
+  tm_borders() 
+```
+
+
+ ## tmap example
+
+```{r,echo = TRUE, eval = TRUE}
+# or polygons
+tm_shape(nycbb) + 
+    tm_polygons()
+```
+
+ 
+## tmap Colors 
+
+```{r, echo=TRUE, eval=TRUE}
+map1 <- tm_shape(nycbb) + tm_fill(col = "red")
+map2 <- tm_shape(nycbb) + tm_fill(col = "red", alpha  = .2)
+map3 <- tm_shape(nycbb) + tm_borders(col = "grey")
+map4 <- tm_shape(nycbb) + tm_borders(col = "blue", lwd = 0.5, lty = 2)
+tmap_arrange(map1, map2, map3, map4)
+```
+
+## tmap colors with Data
+```{r}
+tm_shape(nycbb) + tm_fill(col = "BoroName") + 
+    tm_borders(col = "blue", lwd = 0.5, lty = 2)
+```
+
+## Classification - Numeric Data
+
+The common classification methods are:
+
+- Equal Interval will deal with the **range** it will cut the range into equal sizes
+- Quantile will deal with the **population** it will cut the population into equal sizes
+- Natural Breaks will **algorithmically** minimize within-class variance and maximize between-class differences.
+- Manual allows **full control** to the user
+- Geometric Interval is created using **geometric progression**, a sequence of numbers where each term after the first is found by multiplying the previous one by a fixed, non-zero number called the common ratio
+
+## Classification in Histogram 
+```{r classificationMethods, echo=FALSE, fig.cap="Classification Methods"}
+knitr::include_graphics("https://www.axismaps.com/guide/data/data-classification/histogram_examples.png")
+```
+
+## Classification in Maps 
+
+```{r classificationMethodsMaps, echo=FALSE, fig.cap="Classification Methods on Maps"}
+knitr::include_graphics("https://kaitlyncoleman22.files.wordpress.com/2015/11/lab66.jpg?w=712")
+```
+
+## tmap Layout Elements:
+
+- `tm_layout` Adjust the layout (main function)
+- `tm_legend` Adjust the legend
+- `tm_view` Configure the interactive view mode
+- `tm_style` Apply a predefined style
+- `tm_format` Apply a predefined format
+
+## layout
+```{r, eval=TRUE}
+tm_shape(nycbb) +
+  tm_borders() +
+    tm_layout(title = "NYC")
+```
+
+
+
+## tmap Attributes:
+
+- `tm_grid` Create grid lines
+- `tm_scale_bar` Create a scale bar
+- `tm_compass` Create a map compass
+- `tm_credits` Create a text for credits
+- `tm_logo` Create a logo
+- `tm_xlab` and tm_ylab Create axis labels
+- `tm_minimap` Create a minimap (view mode only)
+
+## Attributes
+
+```{r, eval=TRUE}
+tm_shape(nycbb) + tm_fill(col = "BoroName", title = "Boroughs") + 
+    tm_borders(col = "white", lwd = 0.5) + 
+    tm_text(text = "BoroName", size = 0.7, col = "black") + 
+    tm_layout(title = "NYC", bg.color = "lightblue") +
+    tm_compass() + 
+    tm_scale_bar() + 
+    tm_credits("New York City Department of City Planning 5/20/2019",
+               size = 0.5,align = "right")
+    
+```
+
+
+## Exercise 3.1
+
+Make three maps from your `usCounties` comparing the percent difference in areas.
+
+Make sure to have a north arrow, scale bar, source, legend, and title. 
+
+You can add a projection on the fly. by specifying the `projection` attribute
+in tm_shape too if you want to play with that. 
+
+## Faceted Map
+
+```{r, echo = TRUE, eval = FALSE}
+subway <- read_sf( "../Shapes/SubwayLines") %>% 
+    st_transform(2263) %>% mutate(rt_symbol = as.factor(rt_symbol))
+
+subwayPalette <- c("1"='#EE352E', "4"='#00933C', "7"='#B933AD',
+                   "A"='#0039A6',"B"='#FF6319', "G"= '#6CBE45', 
+                   "J"='#996633',"L"='#A7A9AC',"N"='#FCCC0A')
+
+tm_shape(nycbb) + tm_borders(col = "grey") +
+      tm_shape(subway) + 
+          tm_lines(col = 'rt_symbol', palette = subwayPalette) +
+      tm_facets(by = "rt_symbol", free.coords = FALSE, nrow = 3)
+```
+
+## Faceted Map
+
+```{r}
+subway <- read_sf( "../Shapes/SubwayLines") %>% 
+    st_transform(2263) %>% mutate(rt_symbol = as.factor(rt_symbol))
+
+subwayPalette <- c("1"='#EE352E', "4"='#00933C', "7"='#B933AD',
+                   "A"='#0039A6',"B"='#FF6319', "G"= '#6CBE45', 
+                   "J"='#996633',"L"='#A7A9AC',"N"='#FCCC0A')
+
+tm_shape(nycbb) + tm_borders(col = "grey") +
+      tm_shape(subway) + 
+          tm_lines(col = 'rt_symbol', palette = subwayPalette) +
+      tm_facets(by = "rt_symbol", free.coords = FALSE, nrow = 3)
+```
+
+## Animated Maps 
+
+you might need [image magick](https://imagemagick.org/script/download.php#macosx)
+
+we will use the `tmap_animation` function to create a gif. 
+
+The parameters that are important are:
+`filename` is the filename of the video (should be a .gif or .mpg file]
+`delay` is the time between images (in 1/100th of a second) so 4 seconds is 400.
+`loop` is a logical that determines whether the animation is looped, or an integer value that determines how many times the animation is looped.
+
+## Animated Maps 
+
+```{r, echo=TRUE, eval=FALSE}
+
+subwayMaps <- tm_shape(nycbb, simplify = 0.8) + 
+    tm_borders(col = "grey") +
+      tm_shape(subway) + 
+          tm_lines(col = 'rt_symbol', palette = subwayPalette) +
+      tm_facets(along = "rt_symbol", free.coords = FALSE)
+
+tmap_animation(subwayMaps, filename = "subway.gif",
+               delay = 150, loop = TRUE)
+
+```
+
+## Subway Gif
+
+```{r, out.width="80%"}
+knitr::include_graphics("../subway.gif")
+```
+
+
+## Interactive Maps with Leaflet 
+
+Leaflet is a great interactive mapping platform and couldn't be simpler to add to your
+rmarkdown document/slides or shiny dashboards. It can deal with `sf` and `sp` objects
+so you don't have to make any conversions with your spatial data!
+
+## basemap
+
+we can set the view and add a provider tile
+
+```{r, echo=TRUE, eval=TRUE}
+library(leaflet)
+m <- leaflet() %>% 
+    setView(lng = -73.9691305, lat = 40.7764627, zoom = 11) %>% 
+    addProviderTiles(providers$CartoDB.Positron)
+m
+
+```
+
+## adding data
+
+```{r,echo=TRUE, eval=TRUE}
+m %>% addPolygons(data = nycbb %>% st_transform(4326)) %>% 
+    addPolylines(data = subway %>% st_transform(4326))
+```
+
+## Colors with palettes
+
+```{r, echo=TRUE, eval=FALSE}
+pal <- colorFactor(palette = c("#EE352E", "#00933C", "#B933AD",
+                           "#0039A6", "#FF6319", "#6CBE45",
+                           "#996633", "#A7A9AC", "#FCCC0A"), 
+               levels = c("1", "4", "7", "A", "B",
+                          "G", "J", "L", "N"))
+
+m %>% addPolygons(data = nycbb %>% st_transform(4326),fillColor ="NA") %>% 
+    addPolylines(data = subway %>% st_transform(4326),
+                 color = ~pal(rt_symbol))
+```
+## Colors with palettes
+
+```{r, echo=FALSE, eval=TRUE}
+pal <- colorFactor(palette = c("#EE352E", "#00933C", "#B933AD",
+                           "#0039A6", "#FF6319", "#6CBE45",
+                           "#996633", "#A7A9AC", "#FCCC0A"), 
+               levels = c("1", "4", "7", "A", "B",
+                          "G", "J", "L", "N"))
+
+m %>% addPolygons(data = nycbb %>% st_transform(4326),fillColor ="NA") %>% 
+    addPolylines(data = subway %>% st_transform(4326),
+                 color = ~pal(rt_symbol))
+```
+
+## Exercise 3.2
+
+Add usCounties to a leaflet map and create a color palette for `colorNumeric`
+using one of your percent differences. 

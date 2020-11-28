@@ -1,0 +1,128 @@
+---
+title: "Intro to Geoprocessing"
+author: "Kaz Sakamoto"
+date: "`r Sys.Date()`"
+output: "ioslides_presentation"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      warning = FALSE, 
+                      error = FALSE, 
+                      cache = FALSE, 
+                      message = FALSE,
+                      fig.align="center")
+```
+
+
+# Geoprocessing
+
+## What is Geoprocessing
+
+Geoprocessing is a framework and set of tools for processing geographic and related data. The comprehensive suite of geoprocessing tools can be used to perform spatial analysis or manage GIS data in an automated way.
+
+- **Spatial Data Operations** works with the geographic aspects as opposed to attribute data
+- **Geometric Operations** creates new or modifies existing geometries
+
+## Common Operations
+
+- Intersect | Computes a geometric intersection of the input features. Features or portions of features which overlap in all layers and/or feature classes will be written to the output feature class.
+- crop/clip | Extracts input features that overlay the clip features.
+- union | Computes a geometric union of the input features. All features and their attributes will be written to the output feature class.
+- Buffer |Creates buffer polygons around input features to a specified distance.
+- Spatial Join | Joins attributes from one feature to another based on the spatial relationship. 
+- Nearness | Calculate distances from features
+
+## Intersection
+
+```{r intersectCode, echo=TRUE, eval = FALSE}
+OUTPUT <-st_intersection(INPUT, INTERSECT FEATURE)
+```
+
+```{r intersect, echo=FALSE, fig.cap="", out.width="80%"}
+knitr::include_graphics("https://pro.arcgis.com/en/pro-app/tool-reference/analysis/GUID-93B78EC9-4024-43AC-87BF-765FAD873B00-web.gif")
+```
+
+
+## Crop
+
+```{r clipCode, echo=TRUE, eval = FALSE}
+OUTPUT <-st_crop(INPUT, CLIP FEATURE)
+```
+
+```{r clip, echo=FALSE, fig.cap="", out.width="80%"}
+knitr::include_graphics("https://desktop.arcgis.com/en/arcmap/10.3/tools/analysis-toolbox/GUID-6D3322A8-57EA-4D24-9FFE-2A9E7C6B29EC-web.gif")
+```
+
+## Union
+
+```{r unionCode, echo=TRUE, eval = FALSE}
+OUTPUT <-st_crop(INPUT PURPLE, INPUT YELLOW)
+```
+
+```{r union, echo=FALSE, fig.cap="", out.width="60%"}
+knitr::include_graphics("https://www.researchgate.net/profile/Nathan_Habana/publication/266139309/figure/fig21/AS:650845075021824@1532184966132/The-GIS-Union-tool-The-tool-creates-a-new-polygon-shape-file-where-intersecting-polygons.png")
+```
+
+## Buffer
+
+```{r bufferCode, echo=TRUE, eval = FALSE}
+OUTPUT <-st_buffer(INPUT, DISTANCE)
+```
+
+```{r buffer, echo=FALSE, fig.cap="", out.width="80%"}
+knitr::include_graphics("https://desktop.arcgis.com/en/arcmap/10.3/tools/coverage-toolbox/GUID-D5947994-7AFA-4D50-BE4C-2EE572517EFB-web.gif")
+```
+
+## Spatial Join
+
+```{r spatialJoinCode, echo=TRUE, eval = FALSE}
+OUTPUT <-st_join(POINT, POLYGON)
+```
+
+```{r spatialJoin, echo=FALSE, fig.cap="", out.width="100%"}
+knitr::include_graphics("https://www.researchgate.net/publication/307794422/figure/fig5/AS:405375158374405@1473660377811/Schematic-illustrating-the-spatial-join-between-a-layer-with-three-points-and-a-second.png")
+```
+
+## Spatial Relationships
+
+```{r spatialrelationsCode, echo=TRUE, eval = FALSE}
+OUTPUT <-st_join(POINT, POLYGON, join = ___)
+```
+
+<div class="columns-2">
+- st_contains_properly
+- st_contains
+- st_covered_by
+- st_covers
+- st_crosses
+- st_disjoint
+- st_equals_exact
+- st_equals
+- st_is_within_distance
+- st_nearest_feature
+- st_overlaps
+- st_touches
+- st_within
+</div>
+
+
+## Spatial Relationships
+
+```{r spatialRelationships, echo=FALSE, fig.cap="", out.width="50%"}
+knitr::include_graphics("https://pro.arcgis.com/en/pro-app/tool-reference/analysis/GUID-F2B0B105-5B47-486C-B8C2-388C43C18A9D-web.png")
+```
+
+## Distance
+
+```{r spatialdistCode, echo=TRUE, eval = FALSE}
+OUTPUT <-st_distance(POINT, POLYGON)
+```
+
+```{r spatialDIst, echo=FALSE, fig.cap="", out.width="100%"}
+knitr::include_graphics("https://www.researchgate.net/publication/307794422/figure/fig5/AS:405375158374405@1473660377811/Schematic-illustrating-the-spatial-join-between-a-layer-with-three-points-and-a-second.png")
+```
+
+## Exercise 4.1
+
+Follow along. 
