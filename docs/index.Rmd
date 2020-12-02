@@ -8,8 +8,10 @@ Email: [k.sakamoto@colmubia.edu](k.sakamoto@colmubia.edu)
 ------
 
 ## [Section 1 - Intro to GIS ](Section1_GIS.html)
-## [Section 2 - Coordinate Reference Systems](Section1_CRS.html)
-## [Section 3 - Cartography](Section1_Cartography.html)
-## [Section 4 - Geoprocessing](Section1_Geoprocessing.html)
-## [Section 5 - Spatial Point Pattern Analysis](Section1_SpatialStats.html)
-## [Section 6 - Multi-criteria Decision Analysis](Section1_MCDA.html)
+## [Section 2 - Coordinate Reference Systems](Section2_CRS.html)
+## [Section 3 - Cartography](Section3_Cartography.html)
+## [Section 4 - Geoprocessing](Section4_Geoprocessing.html)
+## [Section 5 - Spatial Point Pattern Analysis](Section5_SpatialStats.html)
+## [Section 6 - Multi-criteria Decision Analysis](Section6_MCDA.html)
+
+## [Section X - Spatial Modeling](Section6_SpatialModeling.html)
