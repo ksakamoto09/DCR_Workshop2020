@@ -24,15 +24,19 @@ knitr::opts_chunk$set(echo = FALSE,
 
 - **background** : Senior Data Scientist - Lander Analytics & Adjunct Assistant Professor Columbia University GSAPP  
 
-- **new COVID hobby** : Making Kimchi 
-
+- **location** : Currently based out of Sacramento
 ## About You
 
 - **name** :
 
 - **background** :
 
-- **new COVID hobby** :
+- **location** : 
+
+- **GIS Experience** : 
+
+- **R Experience** : 
+
 
 ## Agenda
 
@@ -43,7 +47,7 @@ knitr::opts_chunk$set(echo = FALSE,
 - 13:00-14:00 Geoprocessing Tools
 - 14:00-15:30 Spatial Stats
 - 15:30-15:45 Break
-- 15:45-17:00 Spatial Autocorrelation + Regression
+- 15:45-17:00 Multi-criteria Decision Analysis + Map Algebra
 
 # Brief History of Maps + GIS
 
