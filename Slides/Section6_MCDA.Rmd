@@ -1,0 +1,195 @@
+---
+title: "Multiple-Criteria Decision Analysis"
+author: "Kaz Sakamoto"
+date: "`r Sys.Date()`"
+output: "ioslides_presentation"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      warning = FALSE, 
+                      error = FALSE, 
+                      cache = FALSE, 
+                      message = FALSE,
+                      fig.align="center")
+```
+
+# MCDA 
+
+# Decision Making
+
+## Going Grocery Shopping
+
+```{r decisions, echo=FALSE, fig.cap="", out.width= '80%' }
+knitr::include_graphics('https://media.giphy.com/media/ijffQaOlrXhBe/giphy.gif')
+```
+
+<div class="notes">
+What goes into decisions like what to get at the grocery store.
+</div>
+
+## Choices?
+
+```{r foodChoices, echo=FALSE, fig.cap="", out.width= '80%' }
+knitr::include_graphics('https://i.pinimg.com/originals/9c/79/ba/9c79ba25a973aaa16644dc56efb6df10.jpg')
+```
+
+<div class="notes">
+Breaking up problem into more manageable pieces
+</div>
+
+## Decision Matrix
+
+```{r decisionMatrix, echo=FALSE, fig.cap="", out.width= '80%' }
+knitr::include_graphics('https://d2slcw3kip6qmk.cloudfront.net/marketing/blog/2019Q2/decision-matrix/decision-matrix-restaurant-example-1.png')
+```
+
+<div class="notes">
+Helps us numerically evaluate decision.
+</div>
+
+## Group Decicion Making
+
+```{r groupDecision, echo=FALSE, fig.cap="", out.width= '80%' }
+knitr::include_graphics('https://www.strategyex.co.uk/blog/pmoperspectives/wp-content/uploads/2017/06/meeting-pictofigo-hi-001.png')
+```
+
+<div class="notes">
+also can expose other people's ideas.
+</div>
+
+
+## Decision Efficiency
+
+```{r efficiency, echo=FALSE, fig.cap="xkcd comic", out.width= '80%' }
+knitr::include_graphics('https://imgs.xkcd.com/comics/efficiency.png')
+```
+
+<div class="notes">
+Also true scenario.
+</div>
+
+# Map Algebra
+
+## Map Algebra
+
+```{r simpleMapAlgebra, echo=FALSE }
+knitr::include_graphics(here::here("images","simpleMapAlgebra.png"))
+```
+<div class="notes">
+simple example showing two rasters and the composite
+</div>
+
+
+## Local Operations
+R1 + R2 = output
+```{r localOperations1, echo=FALSE, out.width="100%", out.height="35%",fig.cap="",fig.show='hold',fig.align='center'}
+knitr::include_graphics( "https://mgimond.github.io/Spatial/10-Map-Algebra_files/figure-html/f10-local02-1.png")
+```
+```{r localOperations2, echo=FALSE, out.width="30%", out.height="35%",fig.cap="",fig.show='hold',fig.align='center'}
+knitr::include_graphics("https://gisgeography.com/wp-content/uploads/2015/05/Local-Operation-Raster.png")
+```
+
+<div class="notes">
+Local operations and functions are applied to each individual cell and only involve those cells sharing the same location.
+
+For example, two rasters can be summed (i.e. each overlapping pixels are summed) to generate a new raster
+</div>
+
+## Local Operations - Unary
+R1 * 2 + 1 = output
+```{r localOperations1u, echo=FALSE, out.width="70%", out.height="35%",fig.cap="",fig.show='hold',fig.align='center'}
+knitr::include_graphics( "https://mgimond.github.io/Spatial/10-Map-Algebra_files/figure-html/f10-local01-1.png")
+```
+```{r localOperations2u, echo=FALSE, out.width="30%", out.height="35%",fig.cap="",fig.show='hold',fig.align='center'}
+knitr::include_graphics("https://gisgeography.com/wp-content/uploads/2015/05/Local-Operation-Raster.png")
+```
+
+<div class="notes">
+Local operations and functions are applied to each individual cell and only involve those cells sharing the same location.
+
+For example, if we start off with an original raster, then multiply it by 2 then add 1, we get a new raster whose cell values reflect the series of operations performed on the original raster cells. This is an example of a unary operation where just one single raster is involved in the operation.
+</div>
+
+## Local Operations - Reclassify
+R1 (1-25) -> 25, (26-50) -> 50... = output
+```{r localOperations1r, echo=FALSE, out.width="70%", out.height="35%",fig.cap="",fig.show='hold',fig.align='center'}
+knitr::include_graphics( "https://mgimond.github.io/Spatial/10-Map-Algebra_files/figure-html/f10-local03-1.png")
+```
+```{r localOperations2r, echo=FALSE, out.width="30%", out.height="35%",fig.cap="",fig.show='hold',fig.align='center'}
+knitr::include_graphics("https://gisgeography.com/wp-content/uploads/2015/05/Local-Operation-Raster.png")
+```
+
+<div class="notes">
+Local operations also include reclassification of values. This is where a range of values from the input raster are assigned a new (common) value. For example, we might want to reclassify the input raster values as follows:
+</div>
+
+## Focal Operations 
+R1: mean of neighbors = output
+```{r focalOperations1, echo=FALSE, out.width="70%", out.height="35%",fig.cap="",fig.show='hold',fig.align='center'}
+knitr::include_graphics( "https://mgimond.github.io/Spatial/10-Map-Algebra_files/figure-html/f10-focal02-1.png")
+```
+```{r focalOperations2, echo=FALSE, out.width="30%", out.height="35%",fig.cap="",fig.show='hold',fig.align='center'}
+knitr::include_graphics("https://gisgeography.com/wp-content/uploads/2015/05/Focal-Operation-Raster-2.png")
+```
+
+<div class="notes">
+Focal operations assign to the output cells some summary value (such as the mean) of the neighboring cells from the input raster. For example, a cell output value can be the average of all 9 neighboring input cells (including the center cell); this acts as a smoothing function.
+</div>
+
+## Focal Operations - Kernel Density
+R1: kernel function on raster value = output
+```{r focalOpeations1k, echo=FALSE, out.width="70%", out.height="35%",fig.cap="",fig.show='hold',fig.align='center'}
+knitr::include_graphics( "https://mgimond.github.io/Spatial/10-Map-Algebra_files/figure-html/f10-focal04-1.png")
+```
+```{r focalOpeations2k, echo=FALSE, out.width="30%", out.height="35%",fig.cap="",fig.show='hold',fig.align='center'}
+knitr::include_graphics("https://gisgeography.com/wp-content/uploads/2015/06/Moving-Window-1.png")
+```
+
+<div class="notes">
+Focal (or neighbor) operations require that a window region (a kernel) be defined. In the above examples, a simple 3 by 3 kernel (or window) was used in the focal operations. The kernel can take on different dimensions and shape such as a 3 by 3 square where the central pixel is ignored (thus reducing the number of neighbors to 8) or a circular neighbor defined by a radius.
+
+In addition to defining the neighborhood shape and dimension, a kernel also defines the weight each neighboring cell contributes to the summary statistic. For example, all cells in a 3 by 3 neighbor could each contribute 1/9th of their value to the summarized value (i.e. equal weight). But the weight can take on a more complex form defined by a function; such weights are defined by a kernel function. One popular function is a Gaussian weighted function which assigns greater weight to nearby cells than those further away.
+</div>
+
+## Zonal Operations
+R1: mean of zone = output
+```{r zonalOperations1, echo=FALSE, out.width="100%", out.height="35%",fig.cap="",fig.show='hold',fig.align='right'}
+knitr::include_graphics( "https://mgimond.github.io/Spatial/10-Map-Algebra_files/figure-html/f10-zonal01-1.png")
+```
+```{r zonalOperations2, echo=FALSE, out.width="30%", out.height="35%",fig.cap="",fig.show='hold',fig.align='center'}
+knitr::include_graphics("https://gisgeography.com/wp-content/uploads/2015/05/Zonal-Operation-Raster.png")
+```
+
+<div class="notes">
+A zonal operation computes a new summary value (such as the mean) from cells aggregated for some zonal unit. In the following example, the cell values from the raster layer are aggregated into three zones whose boundaries are delineated in red. Each output zone shows the average value of the cells within that zone.
+</div>
+
+## Global Operations
+Input: distance = output
+```{r globalsOperations1, echo=FALSE, out.width="100%", out.height="35%",fig.cap="",fig.show='hold',fig.align='right'}
+knitr::include_graphics( "https://mgimond.github.io/Spatial/10-Map-Algebra_files/figure-html/f10-global01-1.png")
+```
+```{r globalOperations2, echo=FALSE, out.width="30%", out.height="35%",fig.cap="",fig.show='hold',fig.align='center'}
+knitr::include_graphics("https://gisgeography.com/wp-content/uploads/2015/05/Global-Operation-Raster.png")
+```
+
+<div class="notes">
+Global operations and functions may make use of some or all input cells when computing an output cell value. An example of a global function is the Euclidean Distance tool which computes the shortest distance between a pixel and a source (or destination) location. In the following example, a new raster assigns to each cell a distance value to the closest cell having a value of 1 (there are just two such cells in the input raster).
+</div>
+
+## Real World Example
+
+```{r MCDAExamples, echo=FALSE, out.width="100%"}
+knitr::include_graphics(here::here("images","MCDAExamples.jpg"))
+```
+
+## Workshop Example
+
+**Supermarkets that are going to be targeted for small business support**
+
+### Criteria
+
+- distance from subway
+- low income areas
+- high SNAP participants
