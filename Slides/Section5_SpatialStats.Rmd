@@ -6,6 +6,7 @@ output: "ioslides_presentation"
 ---
 
 ```{r setup, include=FALSE}
+library(dplyr)
 knitr::opts_chunk$set(echo = FALSE, 
                       warning = FALSE, 
                       error = FALSE, 
@@ -16,29 +17,34 @@ knitr::opts_chunk$set(echo = FALSE,
 
 # Spatial Statistics
 
-## Intro
+## Introduction
 
 Unlike traditional non-spatial statistical methods,
-we incorporate space (proximity, area, connectivity, 
-and/or other spatial relationships) directly into the mathematics.
+we incorporate space *(proximity, area, connectivity, 
+and/or other spatial relationships)* directly into the mathematics.
 
-There are **three** main types of spatial statistics: Geostatistics, 
-Point Pattern Analysis, and Lattice Data Analysis. We'll focus on
-the first two.
+There are **three** main types of spatial statistics: 
 
-## sp land
+- Geostatistics 
+- Point Pattern Analysis
+- Lattice Data Analysis
+
+We'll focus on point pattern analysis.
+
+## sp-land (detour)
 
 We were previously working with sf objects, but we must revert back to sp objects
-to utilize the functionality of these libraries.
+to utilize the functionality of many spatial stats libraries.
 
 
 ## Geostatistics
 
 Geostatistics are used for point observations that are continuously changing over regions. 
 
-```{r geostats, echo=FALSE, fig.cap="Semivariogram modeling winter temps", out.width = "60%"}
+```{r geostats, echo=FALSE, fig.cap="Semivariogram modeling winter temps", out.width = "55%"}
 knitr::include_graphics("https://desktop.arcgis.com/en/arcmap/latest/extensions/geostatistical-analyst/GUID-EC38C932-C716-4F2D-ACA4-2F7D659C9950-web.png")
 ```
+
 <div class="notes">
 You can think of natural phenomena like temperature, precipitation, geological features.
 </div>
@@ -47,8 +53,8 @@ You can think of natural phenomena like temperature, precipitation, geological f
 
 Discrete or countable observations occur across regions that can be analyzed. 
 
-```{r pointPattern, echo=FALSE, fig.cap=""}
-knitr::include_graphics("https://folk.uio.no/ohammer/past/pointpat2.jpg")
+```{r pointPattern, echo=FALSE, fig.cap="", out.width = "55%"}
+knitr::include_graphics("https://upload.wikimedia.org/wikipedia/commons/c/c7/Snow-cholera-map.jpg")
 ```
 
 <div class="notes">
@@ -61,7 +67,9 @@ Why is this field so exciting?  One factor has been a growing
 awareness that data collected in space, like data collected over time, tend to exhibit
 statistical dependence or spatial autocorrelation. 
 
-[Tobler's First Law of Geography](https://en.wikipedia.org/wiki/Tobler%27s_first_law_of_geography) states "everything is related to everything else, but near things are more related than distant things".
+[Tobler's First Law of Geography](https://en.wikipedia.org/wiki/Tobler%27s_first_law_of_geography) states:
+
+**"everything is related to everything else, but near things are more related than distant things".**
 
 # Point Pattern Analysis
 
@@ -71,38 +79,18 @@ Spatial point pattern analysis uses the `spatstat` package primarily.
 
 Examples:
 
-- Locations of Street Trees
+- Locations of street trees
 - Density of crimes 
-- Clustering of Asthma
-- Human Settlement Patterns
+- Clustering of asthma
+- Human settlement patterns
+- others???
 
 ## PPA Terms
 
-- **Events** are points where the location of event of interest all points are known no missing values
+- **Events** are points where the observation is made (assumes all points are known no missing values)
 - **Spatial Process** how a spatial pattern might be generated
 - **Spatial Pattern** a potential realization of a stochastic process
-- **Complete Spatial Randomness** a stochastic process that can be mapped and derived or computed.  
-
-## Applying Patterns
-
-- to better understand the phenomena
-- to monitor changing conditions
-- to compare and contrast different features
-
-## PPA Assumptions 
-
-In PPA, the null hypothesis in PPA is complete spatial randomness(CSR), 
-if you reject the null hypothesis a significant pattern may be at play.
-
-```{r csr, echo=FALSE, fig.cap="", out.width = "50%"}
-library(dplyr)
-library(sp)
-knitr::include_graphics("https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Point_pattern.png/440px-Point_pattern.png")
-```
-
-<div class="notes">
-You can think of natural phenomena like temperature, precipitation, geological features.
-</div>
+- **Complete Spatial Randomness** a stochastic process that can be mapped and derived or computed  
 
 ## Seeing & Describing Patterns
 
@@ -111,13 +99,25 @@ Visually it's quiet easy to see patterns on a map...
 But can we describe them quantitatively? and what are methods
 of doing so?
 
+## Why Analyze Patterns?
+
+We don't want to just visually inspect events, we want to quantify and measure it...
+
+- to better understand the phenomena
+- to monitor changing conditions
+- to compare and contrast different features
+
 ## Centrography
 
-The simplest method is Centrography. basically summary stats for spatial features
+The simplest study of measures in PPA is Centrography.
 
-- Mean Center computed average X and Y values
-- Standard Distance the variance average distance from features to mean center
-- Standard Deviational Ellipse standard distances split into X and Y coordinates
+- **Mean Center**: the average X and Y values
+- **Standard Distance**: the variance average distance from features to mean center
+- **Standard Deviational Ellipse**: standard distances split into X and Y coordinates
+
+<div class="notes">
+basically descriptive stats for spatial features
+</div>
 
 ## Centrography
 
@@ -160,19 +160,33 @@ shows compactness
 
 ## Global Density
 
-if we look at the whole study area we can calculate the point density as 
+if we look at the entire study area we can calculate point density as:
 $$\frac{n}{a}$$
-where $n$ is the observed number of points and $a$ is the study region's area. For
+where $n$ is the observed number of events and $a$ is the study region's area. For
 instance if we had 10 schools in 100 acres, our point density is $$\frac{10}{100} = 0.1$$
-so 0.1 schools per acre. 
+so 0.1 schools per acre.
+
+## Complete Spatial Randomness
+
+In PPA, the null hypothesis is complete spatial randomness (CSR), 
+if you reject the null hypothesis a significant pattern may be at play.
+
+```{r csr, echo=FALSE, fig.cap="", out.width = "50%"}
+library(dplyr)
+library(sp)
+knitr::include_graphics("https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Point_pattern.png/440px-Point_pattern.png")
+```
+
 
 ## Local Density
 
-We looked at global density, but what about point patterns that cane be measured 
-across different locations within the study region?
+We looked at global density, but what about point patterns that can be measured 
+across different sections within the study region?
 
-We can then contrast if density is equally distributed across the region, 
+We can then compare whether density is equally distributed across the region, 
 or if there maybe an underlying local process at play.
+
+But first, what does local mean?
 
 <div class="notes">
 What is a neighborhood? distance
@@ -180,7 +194,8 @@ What is a neighborhood? distance
 
 ## Quadrat Density
 
-Quadrats or sub-divisions is a simple form of local density measurement.
+Quadrats or sub-divisions is the simplest measure of local density.
+
 Quadrats are are often squares, but many other
 shapes such as hexagons and triangles can be implored. 
 
@@ -196,32 +211,112 @@ up our schools and count up the number of schools in each square.
 knitr::include_graphics("https://mgimond.github.io/Spatial/11-Point-Patterns_files/figure-html/f11-quad01-1.png")
 ```
 
+## Uber H3
+
+```{r uberH3, echo=FALSE, out.width="50%",out.height="30%",fig.cap="Hexgons",fig.show='hold',fig.align='center'}
+knitr::include_graphics(c("https://1fykyq3mdn5r21tpna3wkdyi-wpengine.netdna-ssl.com/wp-content/uploads/2018/06/image22-300x231.png",
+                        "http://1fykyq3mdn5r21tpna3wkdyi-wpengine.netdna-ssl.com/wp-content/uploads/2018/06/image6-1.png"))
+
+```
+
+<div class="notes">
+Hexagons were an important choice because people in a city are often in motion, and hexagons minimize the quantization error introduced when users move through a city. Hexagons also allow us to approximate radiuses easily
+
+Distances from a triangle to its neighbors (left), a square to its neighbors (center), and a hexagon to its neighbors (right).
+</div>
+
+
 ## Poisson Distribution
 
-The proability distribution for a quadrat count of PPA is based off of the possion distribution. 
-
-where $k$ is the event, $\lambda$ is the average intensity of the pattern per quadrant and $e$ is the bse of the natural 
-logarithm. 
+The probability distribution for a quadrat count of PPA is based off of the possion distribution. 
 
 $$P(k)= \frac{\lambda^k e^{-\lambda}}{k!}$$
+$$ P(k) = e^{-\lambda*a}$$
+
+where $k$ is the event, $\lambda$ is the average intensity of the pattern per quadrant and $e$ is the base of the natural 
+logarithm. it can also be calculated area in the second row.
+
 
 ## Poisson Distribution
-
-To measure the fit of observed the distribution from a quadrat count, you can measure that the mean and variance are equal, called the *variance-mean ratio* and it should equal be 1, if the distribution is poisson. 
 
 ```{r poissonDist, echo=FALSE, fig.cap="", out.width="50%"}
 knitr::include_graphics("https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Poisson_pmf.svg/650px-Poisson_pmf.svg.png")
 ```
 
-## Chi-Square
+## VMR
 
-So for $K$ number of event in a quadrat, you can get the $O$ observed number of quadrats and the $E$ expected number from the poisson probability. 
+You can measure the fit of the observed values from a quadrat count, by calculating variance squared over the mean and if they are equal. This is called the *variance-mean ratio* and if it equal 1.0, meaning it can be modeled by the Poisson distribution, it is randomly distributed. larger VMRs could suggest clumping, while smaller VMRs can show more uniformly dispersed events.  
 
-Once you have the $O$, Poisson Probability, dervied $E$, a chi square number can be created. we expect values of 1, but larger figures can point to clustering (greater observations vs expected values).
+This is also known as the Index of Dispersion. 
+
+$$D = {\sigma^2 \over \mu }$$
+
+## Pearson Chi-Square
+
+Now for the $k$ number of events in a quadrat, you can derive $O$ the number of quadrats and $E$ the expected number from the poisson probability. 
+
+Once you have the $O$, Poisson Probability, derived $E$, a chi square number can be created. 
 
 $$\chi^2 = \frac{(O-E)^2}{E}$$
 
 * limitations, include small sample size with low mean intensity per quadrat. (issue with local stats)
+
+## Calculating Chi Square
+
+```{r, echo=TRUE}
+set.seed(1234)
+sampleObs <- data.frame(trees = rnorm(25, mean = 5, sd = 2) %>% round())
+sampleObs %>% head()
+```
+
+
+## Observed Values
+```{r, echo=TRUE}
+freqT <- table(sampleObs$trees) %>% data.frame() %>% 
+    mutate_all(as.character) %>% mutate_all(as.numeric) %>% 
+    rename(bins = Var1, observed = Freq)
+
+freqT
+```
+## Expected Values
+```{r, echo=TRUE}
+expectedT <- data.frame(bins = seq(0, max(freqT$bins)),
+                       expected = 100*dpois(seq(0, max(freqT$bins)), 
+                                            lambda = mean(sampleObs$trees)))
+expectedT
+```
+
+## Chi Square Calculation
+```{r, echo=TRUE}
+chiTable <- expectedT %>% 
+    left_join(freqT) %>% 
+    tidyr::replace_na(list(observed = 0)) %>% 
+    mutate(diff = abs(observed-expected),
+        chisq = (diff^2)/expected)
+
+chiTable %>% summarize(observed = sum(observed),
+                       diff = sum(diff),
+                                   chisq = sum(chisq))
+```
+
+
+## Chi Square Table
+
+```{r chisqtable, echo=FALSE, fig.cap="", out.width="70%"}
+knitr::include_graphics("https://i.stack.imgur.com/PbEqv.jpg")
+```
+
+## Chi Sqauare Results
+
+```{r, echo=TRUE}
+qchisq(.95, df=25)
+```
+
+ we expect around ~38 but observed 58.94 
+
+<div class="notes">
+As 58.94 < 38 in other words, the observed is much bigger than the expected, we would be rejecting the null hypothesis and would say that the observed distribution does not follow a random spatial distribution (it can be regular or aggregated).
+</div>
 
 ## Quadrat Density
 
@@ -235,10 +330,11 @@ points <- tibble(X = runif(100),
 spatstat::quadratcount(points, nx = 2, ny = 2)
 ```
 
-## Quadrat Nonuniform Geography
+## Quadrats in Nonuniform Geography
 
 Quadrat areas don't have to be uniform like squares, they could
-be created on a covariate like elevation, temperature, land uses, etc. or by creating a [tessellated surface](http://wiki.gis.com/wiki/index.php/Tessellation).
+be created on a covariate like elevation, temperature, land uses, etc. or by 
+creating a [tessellated surface](http://wiki.gis.com/wiki/index.php/Tessellation).
 
 ```{r quadrat2, echo=FALSE, fig.cap="", out.width="80%"}
 knitr::include_graphics("https://mgimond.github.io/Spatial/11-Point-Patterns_files/figure-html/f11-quad03-1.png")
@@ -253,7 +349,7 @@ Though there is a steep increase in density at the highest elevation range, this
 The quadrat analysis is still susceptible to the MAUP!
 
 ```{r quadrat3, echo=FALSE, fig.cap="", out.width="25%"}
-knitr::include_graphics("http://gispopsci.org/wp-content/uploads/2012/09/MAUPZone1.gif")
+knitr::include_graphics("http://2rct3i2488gxf9jvb1lqhek9-wpengine.netdna-ssl.com/wp-content/uploads/2020/09/gispopsci_MAUPZone1.gif")
 ```
 
 ## More Definitions
@@ -284,16 +380,17 @@ knitr::include_graphics("https://myeducationofagardener.files.wordpress.com/2012
 
 ## Non-Stationary
 
-When the chances of events change over space, the process is non-stationary. ie. if 
-even though we accept probabilistic placement, if things are stationary we expect the 
-intensity to stay constant and not drift. 
+The assumption is that the statistical properties of the population do not change over time or space. 
+The simplest form of a nonstationary data set is characterized by a mean that exhibits a trend in space or time
 
-To complicate things further, there are first-order stationarity and second-order stationarity.
+```{r nonStationarity, echo=FALSE, fig.cap="", out.width="60%"}
+knitr::include_graphics("https://desktop.arcgis.com/en/arcmap/latest/tools/spatial-statistics-toolbox/GUID-35AE0DC2-C411-4DE4-9195-DD680D23CE93-web.png")
+```
 
 
 <div class="notes">
-No drift between space or interaction between events/observations. A single realization of a 
-process is not sufficient in differentiating between the two.
+Notice that the relationship between the number of 911 calls and the number of people 
+is different in high-population tracts and southwestern low-population tracts.
 </div>
 
 ## Kernel Density
@@ -399,6 +496,8 @@ simulate over many iterations. Can experimentally derive statistical significanc
 ```{r marbles, echo=FALSE, fig.cap="", out.width="70%"}
 knitr::include_graphics('https://previews.123rf.com/images/kozzi/kozzi1301/kozzi130103327/17169982-close-up-image-of-throwing-assorted-marbles.jpg')
 ```
+
+
 
 ## PPA Critiques
 

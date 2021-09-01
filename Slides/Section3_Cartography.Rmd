@@ -24,7 +24,9 @@ knitr::opts_chunk$set(echo = FALSE,
 
 ## Cartography
 
-...the study and practice of making maps. Combining science, aesthetics, and technique, cartography builds on the premise that reality can be modeled in ways that communicate spatial information effectively
+...the study and practice of making maps. Combining science, aesthetics, and technique, cartography builds on the premise that reality can be modeled in ways that communicate spatial information effectively.
+
+So let's flex some cartographic muscle and avoid cartostrophe 
 
 ## Types of Maps
 
@@ -35,16 +37,21 @@ Here are a sample:
 - Climate maps can show atmospheric conditions
 - Thematic maps show special topics like election results or even energy usage in areas.
 
+<div class="notes">
+you can see it can go from pretty literal to abstract
+</div>
+
+
 ## Reference Maps
 
-```{r reference, echo=FALSE, fig.cap="Hawaii Kai Shopping Center Map", out.width= '80%' }
-knitr::include_graphics('https://hawaiikaishoppingcenter.com/wp-content/uploads/2012/09/map.png')
+```{r reference, echo=FALSE, fig.cap="Columbia University Map", out.width= '60%' }
+knitr::include_graphics('http://www.columbia.edu/cu/arthistory/images/schermerhorn.jpg')
 ```
 
 ## Choropleth Maps
 
-```{r choropleth, echo=FALSE, fig.cap="New York Times Election Map", out.width= '45%' }
-knitr::include_graphics('https://mk0brilliantmaptxoqs.kinstacdn.com/wp-content/uploads/view-from-9th-ave.jpg')
+```{r choropleth, echo=FALSE, fig.cap="New York Times Election Map", out.width= '80%' }
+knitr::include_graphics('https://static01.nyt.com/newsgraphics/2016/11/01/election-map-forms/738e8fe0f4e6d89ec6cb63555d3deb92e772f916/counties.png')
 ```
 
 ## 3D Maps
@@ -166,7 +173,7 @@ The common classification methods are:
 
 ## Classification in Histogram 
 ```{r classificationMethods, echo=FALSE, fig.cap="Classification Methods"}
-knitr::include_graphics("https://www.axismaps.com/guide/data/data-classification/histogram_examples.png")
+knitr::include_graphics("https://uploads-ssl.webflow.com/5f6a4786fa53db61032919f9/5fa44acd9fd5f0dd50b07af2_histogram_examples.png")
 ```
 
 ## Classification in Maps 
@@ -223,7 +230,7 @@ Make three maps from your `usCounties` comparing the percent difference in areas
 
 Make sure to have a north arrow, scale bar, source, legend, and title. 
 
-You can add a projection on the fly. by specifying the `projection` attribute
+You can add a projection on the fly by specifying the `projection` attribute
 in tm_shape too if you want to play with that. 
 
 ## Faceted Map

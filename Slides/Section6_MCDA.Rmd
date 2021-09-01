@@ -14,11 +14,9 @@ knitr::opts_chunk$set(echo = FALSE,
                       fig.align="center")
 ```
 
-# MCDA 
-
 # Decision Making
 
-## Going Grocery Shopping
+## Hypothetical Grocery Trip
 
 ```{r decisions, echo=FALSE, fig.cap="", out.width= '80%' }
 knitr::include_graphics('https://media.giphy.com/media/ijffQaOlrXhBe/giphy.gif')
@@ -28,9 +26,9 @@ knitr::include_graphics('https://media.giphy.com/media/ijffQaOlrXhBe/giphy.gif')
 What goes into decisions like what to get at the grocery store.
 </div>
 
-## Choices?
+## Decision Tree
 
-```{r foodChoices, echo=FALSE, fig.cap="", out.width= '80%' }
+```{r foodChoices, echo=FALSE, fig.cap="", out.width= '85%' }
 knitr::include_graphics('https://i.pinimg.com/originals/9c/79/ba/9c79ba25a973aaa16644dc56efb6df10.jpg')
 ```
 
@@ -40,7 +38,9 @@ Breaking up problem into more manageable pieces
 
 ## Decision Matrix
 
-```{r decisionMatrix, echo=FALSE, fig.cap="", out.width= '80%' }
+What if you have many factors weigh?
+
+```{r decisionMatrix, echo=FALSE, fig.cap="", out.width= '90%' }
 knitr::include_graphics('https://d2slcw3kip6qmk.cloudfront.net/marketing/blog/2019Q2/decision-matrix/decision-matrix-restaurant-example-1.png')
 ```
 
@@ -51,25 +51,40 @@ Helps us numerically evaluate decision.
 ## Group Decicion Making
 
 ```{r groupDecision, echo=FALSE, fig.cap="", out.width= '80%' }
-knitr::include_graphics('https://www.strategyex.co.uk/blog/pmoperspectives/wp-content/uploads/2017/06/meeting-pictofigo-hi-001.png')
+knitr::include_graphics('https://www1.nyc.gov/assets/civicengagement/images/content/pages/Ranked-Choice-Voting-How-to-fill-in-ballot.jpg')
 ```
 
 <div class="notes">
-also can expose other people's ideas.
+for example taking peoples ranked votes in NYC Mayoral election
 </div>
 
 
-## Decision Efficiency
+## The Best Decision?
 
 ```{r efficiency, echo=FALSE, fig.cap="xkcd comic", out.width= '80%' }
 knitr::include_graphics('https://imgs.xkcd.com/comics/efficiency.png')
 ```
 
 <div class="notes">
-Also true scenario.
+Also true scenario. who knows what the best decision is. 
 </div>
 
 # Map Algebra
+
+## Rasters + Matrices
+
+```{r rasterMatrix, echo=FALSE }
+knitr::include_graphics("http://www.innovativegis.com/basis/BeyondMapping_II/Topic6/BM_II_T6_files/image003.jpg")
+```
+
+<div class="notes">
+What we see vs how it is structured as data.
+</div>
+
+## Map Algebra
+
+Map algebra is a set-based algebra for manipulating geographic data, proposed by Dr. Dana Tomlin in the early 1980s. It is a set of primitive operations in a geographic information system (GIS) which allows two or more raster layers ("maps") of similar dimensions to produce a new raster layer (map) using algebraic operations such as addition, subtraction etc.
+
 
 ## Map Algebra
 
@@ -186,9 +201,12 @@ knitr::include_graphics(here::here("images","MCDAExamples.jpg"))
 
 ## Workshop Example
 
-**Supermarkets that are going to be targeted for small business support**
+We are a local economic development agency. We are here to support small businesses,
+but also want to get access to food for low income families.
 
-### Criteria
+**Can we find supermarkets that are going to be targeted for small business support?**
+
+### Create a MCDA based on:
 
 - distance from subway
 - low income areas

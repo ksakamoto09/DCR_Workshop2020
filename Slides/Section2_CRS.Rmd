@@ -32,7 +32,6 @@ and some times curved. which is correct?
 ## Parts of a CRS
 
 - **Datum** : a set of parameters that define the position of the origin, the scale, and the orientation of a coordinate system.
-- **Coordinate System** :  a set of mathematical rules for specifying how coordinates are to be assigned to points, such as: affine, cylindrical, Cartesian, ellipsoidal, linear, polar, spherical, vertical, etc.
 
 ## Datum
 
@@ -44,7 +43,8 @@ The most common datums used are NAD83 and WGS84(basis of all GPS measurements)
 knitr::include_graphics('https://upload.wikimedia.org/wikipedia/commons/5/50/DarienCTUSCoastAndGeodeticSurvey1965Marker11042007.jpg')
 ```
 
-## Topographical Earth
+
+## Surface of the Earth?
 
 ```{r topgraphicEarth, echo=FALSE, fig.cap="Topography of the Earth", out.width= '100%' }
 knitr::include_graphics('http://solarviews.com/raw/earth/earthcyl1.jpg')
@@ -52,6 +52,21 @@ knitr::include_graphics('http://solarviews.com/raw/earth/earthcyl1.jpg')
 
 <div class="notes">
 but we have topography on earth, what about mountains and trenches?
+</div>
+
+
+## Geoid
+
+"mathematical figure of the Earth" - *Gauss*
+```{r geoidUndulation, echo=FALSE, fig.cap="", out.width= '60%' }
+knitr::include_graphics('https://upload.wikimedia.org/wikipedia/commons/4/4a/Geoid_undulation_10k_scale.jpg')
+```
+
+<div class="notes">
+here is the geoid 
+is the shape that the ocean surface would take under the influence of the gravity and rotation of Earth alone, if other influences such as winds and tides were absent.
+
+All points on a geoid surface have the same geopotential (the sum of gravitational potential energy and centrifugal potential energy).
 </div>
 
 ## Reference Ellipsoid
@@ -62,19 +77,7 @@ knitr::include_graphics('https://upload.wikimedia.org/wikipedia/commons/thumb/3/
 <div class="notes">
 a simple model is the globe or sphere, or we can use a slightly more
 complicated shape like the ellipsoid
-</div>
-
-## Geoid
-
-```{r geoidUndulation, echo=FALSE, fig.cap="", out.width= '70%' }
-knitr::include_graphics('https://upload.wikimedia.org/wikipedia/commons/4/4a/Geoid_undulation_10k_scale.jpg')
-```
-
-<div class="notes">
-
-here is the geoid 
-
-is the shape that the ocean surface would take under the influence of the gravity and rotation of Earth alone, if other influences such as winds and tides were absent.
+a is equatorial, and b is polar, and mean radiis
 </div>
 
 
@@ -89,6 +92,14 @@ knitr::include_graphics('https://upload.wikimedia.org/wikipedia/commons/thumb/0/
 more complicated shapes could include the geoid 
 maybe for more physical modelling of the earth
 </div>
+
+## Parts of a CRS
+
+- **Coordinate System** :  a set of mathematical rules for specifying how coordinates are to be assigned to points, such as: affine, cylindrical, Cartesian, ellipsoidal, linear, polar, spherical, vertical, etc.
+
+```{r cartesianCoord, echo=FALSE, fig.cap="", out.width= '50%' }
+knitr::include_graphics('https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Cartesian-coordinate-system.svg/1200px-Cartesian-coordinate-system.svg.png')
+```
 
 
 # Coordinate Systems Types
@@ -285,6 +296,15 @@ https://gisgeography.com/utm-universal-transverse-mercator-projection/
 - units=: the units for the coordinates of the data
 - ellps=: the ellipsoid (how the earth’s roundness is calculated) for the data
 
+## EPSG
+
+The EPSG Geodetic Parameter Dataset is a public registry of geodetic datums, spatial reference systems, Earth ellipsoids, coordinate transformations and related units of measurement. 
+
+for example:
+
+- **proj4string**: +proj=longlat +datum=WGS84 +no_defs 
+- **epsg**: 4326
+ 
 ## checking CRS
 
 to check the CRS of an sf object
@@ -303,7 +323,7 @@ st_set_crs(input, value = "epsg")
 
 ## reprojection CRS
 
-If you would like to reproject your sf object, use `st_transform`
+If you would like to re-project your sf object, use `st_transform`
 
 ```{r st_transform, echo=TRUE, eval = FALSE}
 st_transform(input, value = "epsg")
@@ -321,8 +341,8 @@ Read in the us_county shapefile, calculate areas with `st_area`, reproject data 
 $$\text{Percent Difference} = \frac{\text{(comparison Value - Baseline Value)}}{\text{(BaselineValue)}}$$
 
 ```{r, eval=FALSE, echo=TRUE}
-Area_Albers <- "find PROJ.4"
-Area_Equidistant <- "find PROJ.4"
-Area_Lambert <- "find PROJ.4"
-Area_NYStatePlane <- "find PROJ.4"
+Area_Albers <- "find North America Albers Equal Area Conic"
+Area_Equidistant <- "find Equidistant Conic"
+Area_Lambert <- "find Lambert conformal conic" 
+Area_NYStatePlane <- "find NY State Plane Long Island"
 ```

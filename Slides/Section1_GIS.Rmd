@@ -14,6 +14,12 @@ knitr::opts_chunk$set(echo = FALSE,
                       fig.align="center")
 ```
 
+## Before we Start
+
+If you want to follow along with code and run the examples, you might want to 
+view the workshop on a different device from your rstudio session. Hoppin is pretty
+resource hogging and will slow down your computations.
+
 # Introductions
 
 ## About Me
@@ -25,6 +31,7 @@ knitr::opts_chunk$set(echo = FALSE,
 - **background** : Senior Data Scientist - Lander Analytics & Adjunct Assistant Professor Columbia University GSAPP  
 
 - **location** : Currently based out of Sacramento
+
 ## About You
 
 - **name** :
@@ -37,23 +44,23 @@ knitr::opts_chunk$set(echo = FALSE,
 
 - **R Experience** : 
 
-
 ## Agenda
 
 - 09:00-10:00 Intro to GIS
 - 10:00-11:00 Projections (CRS)
 - 11:00-12:00 Cartography
-- 12:00-13:00 Lunch
-- 13:00-14:00 Geoprocessing Tools
+- 12:00-12:30 Geoprocessing Tools
+- 12:30-13:30 Lunch
+- 13:30-14:00 Geoprocessing Tools
 - 14:00-15:30 Spatial Stats
 - 15:30-15:45 Break
 - 15:45-17:00 Multi-criteria Decision Analysis + Map Algebra
 
 # Brief History of Maps + GIS
 
-## First Maps
+## Ancient Maps
 
-Why do we need maps?
+Why did humans create maps?
 
 ```{r clayTablet, echo=FALSE, fig.cap="Imago Mundi: Babylonia 500 BCE", out.height = '100%'}
 knitr::include_graphics('https://www.geolounge.com/wp-content/uploads/2014/11/Baylonianmaps.jpg')
@@ -67,7 +74,7 @@ where resources are, natural features etc.
 
 ## Data + Maps
 
-What insights can maps show us?
+Can maps be used for insights?
 
 ```{r JohnSnow1, echo=FALSE, fig.cap="Broad Street Cholrea Map - 1854", out.width= '60%' }
 knitr::include_graphics('https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Snow-cholera-map-1.jpg/1277px-Snow-cholera-map-1.jpg')
@@ -80,9 +87,9 @@ data/insight tools.
 
 ## Maps as a Service
 
-What can maps do for us?
+What else can maps do for us?
 
-```{r googleMaps, echo=FALSE, fig.cap="Google Maps Routes", out.height = '90%'}
+```{r googleMaps, echo=FALSE, fig.cap="Google Maps Routes", out.height = '80%'}
 knitr::include_graphics('https://nyc.streetsblog.org/wp-content/uploads/2010/03/08/Picture_2.png')
 ```
 
@@ -93,10 +100,15 @@ routing, check-ins, security
 
 ## Why Spatial Analysis?
 
-Important concepts 
+
+## Why Spatial Analysis?
+
+to measure important concepts: 
+
 **Distance, Adjacency, Interaction, Neighborhood**
 
-or the 3Cs
+or the 3Cs:  
+
 **Containment, Connectivity, Closeness**
 
 <div class="notes">
@@ -120,18 +132,20 @@ GIS refers to a system where geographic information is stored in layers and inte
 
 ## Another Definition
 
-**A GIS is a computer-based system to aid in the collection, maintenance, storage, analysis, output, and distribution of spatial data and information.**
+A GIS is a computer-based system to aid in the **collection, maintenance, storage, analysis, output, and distribution of spatial data and information.**
 
 GIS allows us to define the **where** and **what** types of questions that we have.
 
-## Outputs not always maps
+## GIS Misconceptions
 
-could be just the attribute data for a model. other visualizations. etc
+GIS is not only making maps, while the outputs are often maps this is not cartography.
+
+Sometimes the outputs could be the attribute table.
 
 
-## Models of Abstraction
+## The Globe
 
-```{r globe, echo=FALSE, fig.cap="A model of the Earth", out.width = '60%'}
+```{r globe, echo=FALSE, fig.cap="This is a model of the Earth", out.width = '60%'}
 knitr::include_graphics('https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&itemId=9986512-847&recipeName=680')
 ```
 
@@ -157,6 +171,8 @@ to represent spatial features, while the raster model divides the surface into s
 
 ## Vector vs Raster
 
+Here is an illustration of the vector and raster model compared to an image.
+
 ```{r vectorRaster, echo=FALSE, fig.cap=""}
 knitr::include_graphics('http://www.geography.hunter.cuny.edu/~jochen/GTECH361/lectures/lecture05/concepts/03%20-%20Geographic%20data%20models_files/image003.gif')
 ```
@@ -164,6 +180,8 @@ knitr::include_graphics('http://www.geography.hunter.cuny.edu/~jochen/GTECH361/l
 <div class="notes">
 The raster data model can be used to represent discrete features as well. A building in the raster data model, for example, would be represented as a group of connected cells with the same value, the code value for building. Representing discrete features in the raster data model requires less storage space than storing them in the vector data model, but is less accurate.
 </div>
+
+# Vectors
 
 ## Vectors - simple features
 
@@ -193,7 +211,9 @@ knitr::include_graphics("http://sar.kangwon.ac.kr/etc/rs_note/giswb/vol1/cp2/2-4
 this comes in handy routing, neighbors, other spatial relationship, contiguity 
 </div>
 
-## Raster
+# Raster
+
+## Raster Data
 
 ```{r rasterMap, echo=FALSE, out.width="90%"}
 knitr::include_graphics("https://user-images.githubusercontent.com/1825120/88452351-e3f13800-ce55-11ea-9d6f-540e15809513.png")
@@ -210,6 +230,15 @@ Unlike vector data, cells of a raster can have only one value, and it could repr
 continuous or discrete data. 
 </div>
 
+## Satellite Imagery
+
+```{r satelliteRGB, echo=FALSE, out.width="80%"}
+knitr::include_graphics("https://seos-project.eu/earthspectra/images/LS7-TM-Italy-RGB-en.jpg")
+```
+
+<div class="notes">
+This is just the visible spectrum, but there are up to 11 bands or wavelengths being captured on landast 8-9
+</div>
 
 ## Layered Model
 
@@ -226,11 +255,13 @@ it's like a data base of different tables that can be joined together.
 
 **A map is not the territory it represents, but, if correct, it has a similar structure to the territory, which accounts for its usefulness.** -  *Alfred Korzybski*
 
+**All models are wrong, but some are useful.** - *George Box*
+
 <div class="notes">
 philosophically speaking, remember it's still a model. 
 </div>
 
-# Geographic Data
+# GIS Data
 
 ## Attribute Data
 
@@ -244,7 +275,7 @@ we need to table that has non-spatial information
 
 ## Geometry Data
 
-```{r geometryData, echo=FALSE, fig.cap="Spatial topology: representation and storage", out.width = '100%'}
+```{r geometryData, echo=FALSE, fig.cap="Spatial topology: representation and storage", out.width = '80%'}
 knitr::include_graphics('https://apollomapping.com/wp-content/user_uploads/2014/05/fig2-15_vector_topo.gif')
 ```
 
@@ -254,10 +285,11 @@ the geometry is the spatial part
 
 ## Digital GIS Formats
 
-[GDAL](https://gdal.org/) - Geospatial Data Abstraction Library
+[GDAL](https://gdal.org/) - Geospatial Data Abstraction Library:  
+
 Can read over 200 different formats of data
 
-- Esri Shapefile
+- Esri Shapefile (shp)
 - Geographic JavaScript Object Notation (GeoJSON)
 - Google Keyhole Markup Language (KML/KMZ)
 - GPS exchange Format (GPX)
@@ -268,21 +300,39 @@ Can read over 200 different formats of data
 lots of format that GIS files can be stored.
 </div>
 
-## sf functions
+## sf package functions
 
-all `st_` functions are similar to PostGIS functions and methods. It's a standardized
-way of dealing with spatial data. 
+all `st_` functions are similar to **PostGIS** functions and methods. It's a standardized
+way of dealing with spatial data in DBs and outside to keep the user experience equivalent. 
 
 ## sf classes
 
-- sf, the table (data.frame) with feature attributes and feature geometries, which contains
-- sfc, the list-column with the geometries for each feature (record), which is composed of
-- sfg, the feature geometry of an individual simple feature.
+- **sf**: the table (data.frame) with feature attributes *and* feature geometries, which contains...  
+
+- **sfc**: the list-column with the geometries for *each feature* (record), which is composed of...  
+
+- **sfg**: the *feature geometry* of an individual simple feature.
 
 ## sf object
 
 ```{r sfObject, echo=FALSE, fig.cap="", out.width = '100%'}
 knitr::include_graphics('https://r-spatial.github.io/sf/articles/sf_xfig.png')
+```
+
+## Reading in Data
+
+to load an sf object in R
+
+```{r readSF, echo=TRUE, eval = FALSE}
+st_read(path)
+```
+
+## attribute table
+
+to keep just the attribute table
+
+```{r readSF2, echo=TRUE, eval = FALSE}
+st_drop_geometry(sf_object)
 ```
 
 
@@ -329,19 +379,24 @@ Seeing that high levels of crime correlating with low income counties, doesn't m
 
 The geographic scale at which the study is set is very crucial. 
 
-```{r scale, echo=FALSE, fig.cap="", out.width = '50%'}
+```{r scale, echo=FALSE, fig.cap="", out.width = '60%'}
 knitr::include_graphics('https://i1.wp.com/krygier.owu.edu/krygier_html/geog_222/geog_222_lo/geog_222_lo04_gr/scale.jpg')
 ```
+
+<div class="notes">
+large scale - large amount of data small area
+small scale - small amount of data, large area
+it's a ratio
+</div>
 
 ## Scale Matters
 
 ```{r scalePhoto, echo=FALSE, fig.cap="", out.width = '100%'}
-knitr::include_graphics('https://i.insider.com/5e2ecd1fab49fd2e307bd522?width=1100&format=jpeg&auto=webp')
+knitr::include_graphics('http://greynotgrey.com/blog/wp-content/uploads/2012/11/chuck-close-phil-2001-12.jpg')
 ```
 
-<div class="green2">
-large scale - large amount of data small area
-small scale - small amount of data, large area
+<div class="notes">
+Chuck Close painting
 </div>
 
 ## Non-Uniformity
